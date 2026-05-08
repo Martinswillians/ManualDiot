@@ -575,43 +575,92 @@
     transition: width .5s ease;
   }
 
-  /* ── OBSERVAÇÃO LIDER ── */
-  .obs-box {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(249,115,22,.06));
-    border: 1px solid rgba(245,158,11,.35);
-    border-radius: 14px;
-    padding: 16px 20px;
-    margin-top: 28px;
-    font-size: .88rem;
-    color: #fde68a;
-  }
-  .obs-box-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
-  .obs-box strong { color: #fbbf24; display: block; margin-bottom: 4px; font-size: .9rem; }
-
-  /* ── CALLOUT ── */
-  .callout {
-    background: linear-gradient(135deg, rgba(245,158,11,.06), rgba(14,165,233,.06));
-    border: 1px solid rgba(245,158,11,.25);
-    border-radius: 14px;
-    padding: 16px 20px;
-    margin-bottom: 24px;
-    font-size: .88rem;
-    color: #fde68a;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
-
   /* responsive */
   @media (max-width: 640px) {
     .phase-env { display: none; }
     .section-icon { width: 44px; height: 44px; font-size: 18px; }
     footer { flex-direction: column; gap: 8px; text-align: center; }
   }
+  /* ── NAV SEPARATOR ── */
+  .nav-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+
+  /* ── Button pills (type filter) ── */
+  button.pill { font-family: 'DM Sans', sans-serif; background: transparent; }
+  button.pill:focus { outline: none; }
+
+  /* ── Nav highlight on scroll ── */
+  .nav-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { margin-bottom: 24px; }
+  .progress-label { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: .05em; }
+  .progress-bar { height: 4px; background: var(--border); border-radius: 100px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), #60a5fa); transition: width .5s ease; }
+
+  /* ── CALLOUT ── */
+  .callout { background: linear-gradient(135deg, rgba(245,158,11,.06), rgba(14,165,233,.06)); border: 1px solid rgba(245,158,11,.25); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; font-size: .88rem; color: #fde68a; display: flex; gap: 12px; align-items: flex-start; }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ── OBS BOX ── */
+  .obs-box { display: flex; gap: 14px; align-items: flex-start; background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(249,115,22,.06)); border: 1px solid rgba(245,158,11,.35); border-radius: 14px; padding: 16px 20px; margin-top: 28px; font-size: .88rem; color: #fde68a; }
+  .obs-box-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .obs-box strong { color: #fbbf24; display: block; margin-bottom: 4px; font-size: .9rem; }
+
+  /* ── SEARCH BOX ── */
+  .search-wrap { position: relative; margin-bottom: 28px; }
+  .search-input {
+    width: 100%; padding: 14px 20px 14px 48px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: .95rem;
+    outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  .search-input::placeholder { color: var(--muted); }
+  .search-input:focus { border-color: rgba(14,165,233,.5); box-shadow: 0 0 0 3px rgba(14,165,233,.08); }
+  .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 18px; pointer-events: none; }
+  .search-clear { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 3px 10px; font-size: 11px; cursor: pointer; display: none; font-family: 'DM Mono', monospace; transition: all .2s; }
+  .search-clear:hover { color: var(--accent); border-color: rgba(14,165,233,.4); }
+  .search-results { display: flex; flex-direction: column; gap: 12px; }
+  .search-result-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; cursor: pointer; transition: border-color .2s, background .2s; }
+  .search-result-item:hover { border-color: rgba(14,165,233,.4); background: rgba(14,165,233,.04); }
+  .sri-tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); background: rgba(14,165,233,.1); border: 1px solid rgba(14,165,233,.2); padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; display: inline-block; }
+  .sri-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: .95rem; color: #fff; margin-bottom: 4px; }
+  .sri-preview { font-size: .83rem; color: var(--muted); line-height: 1.5; }
+  .sri-preview mark { background: rgba(14,165,233,.2); color: var(--accent2); border-radius: 3px; padding: 0 2px; }
+  .search-empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: .9rem; }
+  .search-empty-icon { font-size: 36px; margin-bottom: 12px; opacity: .4; }
+  .search-hint { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 16px; letter-spacing: .04em; }
+
+  /* ── GLOSSARY ── */
+  .glossary-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .gfilter { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1px solid var(--border); padding: 5px 12px; border-radius: 8px; cursor: pointer; transition: all .2s; }
+  .gfilter:hover, .gfilter.active { color: var(--accent); background: rgba(14,165,233,.08); border-color: rgba(14,165,233,.4); }
+  .glossary-grid { display: flex; flex-direction: column; gap: 10px; }
+  .glossary-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color .2s; }
+  .glossary-item:hover { border-color: rgba(14,165,233,.3); }
+  .glossary-header { display: flex; align-items: center; gap: 14px; padding: 14px 20px; cursor: pointer; user-select: none; }
+  .glossary-letter { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--accent); background: rgba(14,165,233,.1); border: 1px solid rgba(14,165,233,.2); width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .glossary-term { font-family: 'Syne', sans-serif; font-weight: 600; font-size: .95rem; color: #fff; flex: 1; }
+  .glossary-body { display: none; padding: 0 20px 16px 62px; font-size: .88rem; color: var(--muted); line-height: 1.6; }
+  .glossary-item.open .glossary-body { display: block; }
+  .glossary-item.open .phase-toggle { transform: rotate(180deg); }
+
+  /* ── FAQ ── */
+  .faq-grid { display: flex; flex-direction: column; gap: 10px; }
+  .faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color .2s; }
+  .faq-item:hover { border-color: rgba(14,165,233,.3); }
+  .faq-header { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; }
+  .faq-q-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+  .faq-question { font-family: 'Syne', sans-serif; font-weight: 600; font-size: .95rem; color: #fff; flex: 1; line-height: 1.4; }
+  .faq-body { display: none; padding: 0 20px 16px 50px; font-size: .88rem; color: var(--muted); line-height: 1.7; }
+  .faq-body code { font-family: 'DM Mono', monospace; font-size: .8rem; background: rgba(14,165,233,.1); color: var(--accent2); border: 1px solid rgba(14,165,233,.2); padding: 2px 6px; border-radius: 6px; }
+  .faq-item.open .faq-body { display: block; }
+  .faq-item.open .phase-toggle { transform: rotate(180deg); }
+  .faq-tag { font-family: 'DM Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 6px; letter-spacing: .05em; flex-shrink: 0; margin-top: 3px; }
+  .faq-tag-av { background: rgba(14,165,233,.12); color: var(--accent); border: 1px solid rgba(14,165,233,.25); }
+  .faq-tag-ev { background: rgba(245,158,11,.12); color: var(--gold); border: 1px solid rgba(245,158,11,.25); }
+  .faq-tag-geral { background: rgba(16,185,129,.12); color: var(--green); border: 1px solid rgba(16,185,129,.25); }
+
 </style>
 </head>
 <body>
@@ -630,9 +679,14 @@
 <nav class="nav">
   <div class="nav-inner">
     <span class="nav-label">Tipos</span>
-    <a class="pill active" href="#avulso">⚡ Avulso <span class="pill-num">01</span></a>
-    <a class="pill" href="#eventual">🔁 Eventual <span class="pill-num">02</span></a>
-    <a class="pill" href="#procedure">⚙️ Procedure <span class="pill-num">03</span></a>
+    <button class="pill type-pill active" data-type="avulso" onclick="filterType('avulso', this)">⚡ Avulso <span class="pill-num">01</span></button>
+    <button class="pill type-pill" data-type="eventual" onclick="filterType('eventual', this)">🔁 Eventual <span class="pill-num">02</span></button>
+    <button class="pill type-pill" data-type="procedure" onclick="filterType('procedure', this)">⚙️ Procedure <span class="pill-num">03</span></button>
+    <button class="pill type-pill" data-type="all" onclick="filterType('all', this)">☰ Todos</button>
+    <div class="nav-sep"></div>
+    <a class="pill" href="#busca">🔍 Busca</a>
+    <a class="pill" href="#glossario">📖 Glossário</a>
+    <a class="pill" href="#faq">❓ FAQ</a>
   </div>
 </nav>
 
@@ -731,14 +785,18 @@
           </div>
           <div class="step">
             <div class="step-num">5</div>
-            <div class="step-content">✅ <strong>Marque obrigatoriamente</strong> a opção: <code>Submit application on hold</code>.</div>
+            <div class="step-content">📋 <strong>Confira a descrição da solicitação do ISTM</strong> para verificar o que deve ser realizado no Workload.</div>
           </div>
           <div class="step">
             <div class="step-num">6</div>
-            <div class="step-content">Em <code>Select Jobs</code>, selecione os jobs conforme o <strong>Checklist</strong> da RIT.</div>
+            <div class="step-content">✅ <strong>Marque obrigatoriamente</strong> a opção: <code>Submit application on hold</code>.</div>
           </div>
           <div class="step">
             <div class="step-num">7</div>
+            <div class="step-content">Em <code>Select Jobs</code>, selecione os jobs conforme o <strong>Checklist</strong> da RIT.</div>
+          </div>
+          <div class="step">
+            <div class="step-num">8</div>
             <div class="step-content">Preencha os parâmetros conforme a tabela abaixo e acione <code>Ok</code>.</div>
           </div>
         </div>
@@ -805,10 +863,14 @@
           </div>
           <div class="step">
             <div class="step-num">6</div>
-            <div class="step-content">Clique com o botão direito na execução e selecione <code>Release Application</code>.</div>
+            <div class="step-content">📋 <strong>Confira a descrição da solicitação do ISTM</strong> para verificar o que deve ser realizado no Workload.</div>
           </div>
           <div class="step">
             <div class="step-num">7</div>
+            <div class="step-content">Clique com o botão direito na execução e selecione <code>Release Application</code>.</div>
+          </div>
+          <div class="step">
+            <div class="step-num">8</div>
             <div class="step-content">Informe o <strong>número da RIT</strong> no campo de comentário e clique em <code>Ok</code>.</div>
           </div>
         </div>
@@ -904,15 +966,6 @@
         </div>
       </div>
     </div>
-
-    <!-- OBSERVAÇÃO AVULSO -->
-    <div class="obs-box">
-      <span class="obs-box-icon">👨‍💼</span>
-      <div>
-        <strong>Ficou com dúvida?</strong>
-        Caso fique com alguma dúvida ou a requisição peça algo diferente do normal, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir com a execução.
-      </div>
-    </div>
   </div>
 
   <!-- ══════════════ SEÇÃO 2 · JOB EVENTUAL ══════════════ -->
@@ -924,72 +977,54 @@
         <div class="section-title">Job Eventual</div>
       </div>
     </div>
-
     <div class="progress-wrap">
       <div class="progress-label"><span>Progresso do procedimento</span><span>3 fases</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
     </div>
-
     <div class="callout">
       <span class="callout-icon">💡</span>
       <div><strong>Diferença em relação ao Avulso:</strong> No Job Eventual os parâmetros são definidos pela requisição do ISTM e podem ficar em branco quando não informados. O Monitor exibe as últimas execuções via campo <code>Last # of generations</code>, e não há necessidade de Reset Definitions — a liberação é feita diretamente após conferir os jobs.</div>
     </div>
 
-    <!-- FASE 1 -->
     <div class="phase-card open" id="ev-monitor">
       <div class="phase-header" onclick="toggle('ev-monitor')">
         <span class="phase-num">FASE 01</span>
         <span class="phase-title">🖥️ Monitor — Preparação do Ambiente</span>
-        <div class="phase-env">
-          <span class="env-tag env-hml">HML</span>
-          <span class="env-tag env-prd">PRD</span>
-          <span class="env-tag env-dev">DEV</span>
-        </div>
+        <div class="phase-env"><span class="env-tag env-hml">HML</span><span class="env-tag env-prd">PRD</span><span class="env-tag env-dev">DEV</span></div>
         <span class="phase-toggle">▾</span>
       </div>
       <div class="phase-body">
-        <div class="alert alert-info">
-          <span class="alert-icon">ℹ️</span>
-          <div>O campo <code>Last # of generations</code> exibe o histórico das últimas execuções da application, útil para comparar comportamentos antes do reprocessamento.</div>
-        </div>
+        <div class="alert alert-info"><span class="alert-icon">ℹ️</span><div>O campo <code>Last # of generations</code> exibe o histórico das últimas execuções, útil para comparar comportamento antes do reprocessamento.</div></div>
         <div class="steps">
           <div class="step"><div class="step-num">1</div><div class="step-content">Acesse o <strong>Workload Monitor</strong> e selecione o <strong>tipo de servidor</strong>: <code>Homologação</code>, <code>Produção</code> ou <code>Desenvolvimento</code>.</div></div>
           <div class="step"><div class="step-num">2</div><div class="step-content">Clique com o <strong>botão direito</strong> na listagem e selecione <code>Subscribe with filter...</code></div></div>
           <div class="step"><div class="step-num">3</div><div class="step-content">No campo <code>Filter Name</code>, informe o <strong>nome da Application</strong>.</div></div>
           <div class="step"><div class="step-num">4</div><div class="step-content">Selecione o campo <code>Application with names</code> e informe: <code>* Nome da Application *</code> (com asteriscos nas bordas).</div></div>
-          <div class="step"><div class="step-num">5</div><div class="step-content">No campo <code>Last # of generations</code>, informe <code>3</code> ou <code>5</code>. O sistema apresentará as últimas 3 ou 5 execuções para comparação.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content">No campo <code>Last # of generations</code>, informe <code>3</code> ou <code>5</code> para visualizar as últimas execuções.</div></div>
           <div class="step"><div class="step-num">6</div><div class="step-content">Acione o botão <code>Save and Subscribe</code> para confirmar.</div></div>
         </div>
       </div>
     </div>
 
-    <!-- FASE 2 -->
     <div class="phase-card open" id="ev-define">
       <div class="phase-header" onclick="toggle('ev-define')">
         <span class="phase-num">FASE 02</span>
         <span class="phase-title">🎯 Define — Disparo (Trigger)</span>
-        <div class="phase-env">
-          <span class="env-tag env-hml">HML</span>
-          <span class="env-tag env-prd">PRD</span>
-          <span class="env-tag env-dev">DEV</span>
-        </div>
+        <div class="phase-env"><span class="env-tag env-hml">HML</span><span class="env-tag env-prd">PRD</span><span class="env-tag env-dev">DEV</span></div>
         <span class="phase-toggle">▾</span>
       </div>
       <div class="phase-body">
-        <div class="alert alert-warn">
-          <span class="alert-icon">⚠️</span>
-          <div><strong>Atenção:</strong> Sempre marque <code>Submit application on hold</code> antes de acionar o trigger para evitar execução imediata.</div>
-        </div>
+        <div class="alert alert-warn"><span class="alert-icon">⚠️</span><div><strong>Atenção:</strong> Sempre marque <code>Submit application on hold</code> antes de acionar o trigger.</div></div>
         <div class="steps">
           <div class="step"><div class="step-num">1</div><div class="step-content">Acesse a aba <strong>Define</strong> e selecione o tipo de servidor correspondente.</div></div>
           <div class="step"><div class="step-num">2</div><div class="step-content">Clique com o botão direito e selecione <code>Download</code>.</div></div>
           <div class="step"><div class="step-num">3</div><div class="step-content">Em <code>Search string</code>, informe o nome da Application e clique em <code>Ok</code>.</div></div>
           <div class="step"><div class="step-num">4</div><div class="step-content">Em <code>Event Name</code>, clique com botão direito sobre a application e selecione <code>Trigger...</code></div></div>
-          <div class="step"><div class="step-num">5</div><div class="step-content">✅ <strong>Marque obrigatoriamente:</strong> <code>Submit application on hold</code>.</div></div>
-          <div class="step"><div class="step-num">6</div><div class="step-content">Em <code>Select Jobs</code>, selecione os jobs ou fases conforme a requisição do ISTM.<br><strong>Se a requisição pedir todas as fases:</strong> pode deixar sem marcar — o sistema executará todas automaticamente. Ou selecione todas manualmente, se preferir.</div></div>
-          <div class="step"><div class="step-num">7</div><div class="step-content">Preencha os parâmetros conforme a tabela abaixo e acione <code>Ok</code>.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content">📋 <strong>Confira a descrição da solicitação do ISTM</strong> para verificar o que deve ser realizado no Workload.</div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-content">✅ <strong>Marque obrigatoriamente:</strong> <code>Submit application on hold</code>.</div></div>
+          <div class="step"><div class="step-num">7</div><div class="step-content">Em <code>Select Jobs</code>, selecione os jobs ou fases conforme a requisição do ISTM. Se pedir todas, pode deixar sem marcar — o sistema executa tudo automaticamente.</div></div>
+          <div class="step"><div class="step-num">8</div><div class="step-content">Preencha os parâmetros conforme a tabela abaixo e acione <code>Ok</code>.</div></div>
         </div>
-
         <div class="params-box">
           <div class="params-title">📋 Parâmetros de Trigger — Eventual</div>
           <div class="param-row"><span class="param-key">Parâm 1</span><span class="param-val">Preencher conforme a requisição do ISTM. Se não houver informação ou constar <strong>N/A</strong>, deixe o campo <strong>em branco</strong>.</span></div>
@@ -997,82 +1032,56 @@
           <div class="param-row"><span class="param-key">Parâm 3</span><span class="param-val">Preencher conforme a requisição do ISTM. Se não houver informação ou constar <strong>N/A</strong>, deixe o campo <strong>em branco</strong>.</span></div>
           <div class="param-row"><span class="param-key">Parâm 4</span><span class="param-val">Preencher conforme a requisição do ISTM. Se não houver informação ou constar <strong>N/A</strong>, deixe o campo <strong>em branco</strong>.</span></div>
         </div>
-
-        <div class="alert alert-info" style="margin-bottom:0">
-          <span class="alert-icon">💡</span>
-          <div>Diferente do Avulso, os parâmetros do Eventual são livres e ditados pelo ISTM. Em caso de dúvida, consulte a requisição antes de disparar.</div>
-        </div>
+        <div class="alert alert-info" style="margin-bottom:0"><span class="alert-icon">💡</span><div>Diferente do Avulso, os parâmetros do Eventual são livres e ditados pelo ISTM. Em dúvida, consulte a requisição antes de disparar.</div></div>
       </div>
     </div>
 
-    <!-- FASE 3 -->
     <div class="phase-card open" id="ev-release">
       <div class="phase-header" onclick="toggle('ev-release')">
         <span class="phase-num">FASE 03</span>
         <span class="phase-title">🚀 Monitor — Verificação e Release</span>
-        <div class="phase-env">
-          <span class="env-tag env-hml">HML</span>
-          <span class="env-tag env-prd">PRD</span>
-          <span class="env-tag env-dev">DEV</span>
-        </div>
+        <div class="phase-env"><span class="env-tag env-hml">HML</span><span class="env-tag env-prd">PRD</span><span class="env-tag env-dev">DEV</span></div>
         <span class="phase-toggle">▾</span>
       </div>
       <div class="phase-body">
-        <div class="alert alert-warn">
-          <span class="alert-icon">🔶</span>
-          <div>A requisição aparecerá em <span class="hold-indicator"><span class="hold-dot"></span> LARANJA (Hold)</span>. Verifique se todos os jobs da requisição estão listados antes de liberar.</div>
-        </div>
+        <div class="alert alert-warn"><span class="alert-icon">🔶</span><div>A requisição aparecerá em <span class="hold-indicator"><span class="hold-dot"></span> LARANJA (Hold)</span>. Verifique todos os jobs antes de liberar.</div></div>
         <div class="steps">
           <div class="step"><div class="step-num">1</div><div class="step-content">Volte ao <strong>Monitor</strong> e localize a requisição em <strong>laranja (Hold)</strong>.</div></div>
           <div class="step"><div class="step-num">2</div><div class="step-content">✅ <strong>Verifique</strong> se o sistema apresenta todos os jobs ou fases listados na requisição do ISTM.</div></div>
-          <div class="step"><div class="step-num">3</div><div class="step-content">Confira o <code>Script/Command name</code> descrito no job, se aplicável à requisição.</div></div>
-          <div class="step"><div class="step-num">4</div><div class="step-content">Clique com botão direito na execução e selecione <code>Release Application</code>.</div></div>
-          <div class="step"><div class="step-num">5</div><div class="step-content">Informe o <strong>nome/número da RIT</strong> no campo de comentário e clique em <code>Ok</code>.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Confira o <code>Script/Command name</code> descrito no job, se aplicável.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content">📋 <strong>Confira a descrição da solicitação do ISTM</strong> para verificar o que deve ser realizado no Workload.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content">Clique com botão direito na execução e selecione <code>Release Application</code>.</div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-content">Informe o <strong>nome/número da RIT</strong> no campo de comentário e clique em <code>Ok</code>.</div></div>
         </div>
-
         <div class="istm-block">
           <h4>📝 Finalização no ISTM</h4>
           <div class="steps">
             <div class="step"><div class="step-num">1</div><div class="step-content">Altere o <strong>Estado</strong> do chamado para <code>Resolvido</code>.</div></div>
-            <div class="step"><div class="step-num">2</div><div class="step-content">Informe o <strong>Código de fechamento</strong> conforme o resultado da execução.</div></div>
-            <div class="step"><div class="step-num">3</div><div class="step-content">Selecione o modelo de comentário abaixo e cole os Details do Workload.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-content">Informe o <strong>Código de fechamento</strong> conforme o resultado.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-content">Selecione o modelo de comentário e cole os Details do Workload.</div></div>
           </div>
-
           <div class="istm-tabs">
             <button class="itab ev-itab active" onclick="switchTabEv('em-execucao')" data-tab="em-execucao"><span class="itab-dot" style="background:var(--accent)"></span>Em Execução</button>
             <button class="itab ev-itab" onclick="switchTabEv('com-sucesso')" data-tab="com-sucesso"><span class="itab-dot" style="background:var(--green)"></span>Com Sucesso</button>
             <button class="itab ev-itab" onclick="switchTabEv('com-erro')" data-tab="com-erro"><span class="itab-dot" style="background:var(--red)"></span>Com Erro</button>
           </div>
-
           <div class="itab-panel active" id="ev-tab-em-execucao">
             <div class="itab-meta"><span class="itab-badge" style="background:rgba(14,165,233,.12);color:var(--accent);border-color:rgba(14,165,233,.3)">Código: Processo em execução</span></div>
             <div class="comment-template"><button class="copy-btn" onclick="copyTemplateEv('em-execucao')">Copiar</button>Bom dia, Prezado.<br><br>Application disparada conforme requisitos.<br><span>Processo em execução:</span><br><br><span>[Colar aqui o Print ou Texto dos Details do Workload]</span></div>
-            <div class="alert alert-info" style="margin-top:12px;margin-bottom:0"><span class="alert-icon">ℹ️</span><div>Use logo após o <code>Release Application</code>, enquanto o job ainda está processando.</div></div>
           </div>
-
           <div class="itab-panel" id="ev-tab-com-sucesso">
             <div class="itab-meta"><span class="itab-badge" style="background:rgba(16,185,129,.12);color:var(--green);border-color:rgba(16,185,129,.3)">Código: Com sucesso</span></div>
             <div class="comment-template"><button class="copy-btn" onclick="copyTemplateEv('com-sucesso')">Copiar</button>Bom dia, prezado.<br><br>Application executada <span>com sucesso:</span><br><br><span>[Colar aqui os Details extraídos do Monitor via botão direito &gt; Details]</span></div>
-            <div class="alert alert-success" style="margin-top:12px;margin-bottom:0"><span class="alert-icon">✅</span><div>Use quando a execução terminar sem erros. Verifique o status verde no Monitor antes de fechar o chamado.</div></div>
           </div>
-
           <div class="itab-panel" id="ev-tab-com-erro">
             <div class="itab-meta"><span class="itab-badge" style="background:rgba(239,68,68,.12);color:var(--red);border-color:rgba(239,68,68,.3)">Código: Processamento com erro</span></div>
             <div class="comment-template"><button class="copy-btn" onclick="copyTemplateEv('com-erro')">Copiar</button>Boa tarde, prezado.<br><br>Application disparada conforme requisitos.<br><br>A execução <span>apresentou erro:</span><br><br><span>[Colar aqui os Details extraídos do Monitor via botão direito &gt; Details]</span><br><br><span>[Histórico de log — Retrieve Spool File]</span></div>
-            <div class="alert alert-warn" style="margin-top:12px;margin-bottom:0"><span class="alert-icon">⚠️</span><div>Inclua <strong>obrigatoriamente</strong> os Details <strong>e</strong> o Retrieve Spool File. O log é essencial para análise do erro pela equipe responsável.</div></div>
+            <div class="alert alert-warn" style="margin-top:12px;margin-bottom:0"><span class="alert-icon">⚠️</span><div>Inclua <strong>obrigatoriamente</strong> os Details <strong>e</strong> o Retrieve Spool File.</div></div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- OBSERVAÇÃO EVENTUAL -->
-    <div class="obs-box">
-      <span class="obs-box-icon">👨‍💼</span>
-      <div>
-        <strong>Ficou com dúvida?</strong>
-        Caso fique com alguma dúvida ou a requisição peça algo diferente do normal, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir com a execução.
-      </div>
-    </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida ou a requisição peça algo diferente do normal, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir com a execução.</div></div>
   </div>
 
   <!-- ══════════════ SEÇÃO 3 · JOB PROCEDURE ══════════════ -->
@@ -1089,14 +1098,252 @@
       <h3>Procedimento em Elaboração</h3>
       <p>O guia para execução de Jobs via Procedure será disponibilizado em breve nesta seção.</p>
     </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida ou a requisição peça algo diferente do normal, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir com a execução.</div></div>
+  </div>
 
-    <!-- OBSERVAÇÃO PROCEDURE -->
-    <div class="obs-box">
-      <span class="obs-box-icon">👨‍💼</span>
+  <!-- ══════════════ BUSCA ══════════════ -->
+  <div class="section" id="busca">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)">🔍</div>
       <div>
-        <strong>Ficou com dúvida?</strong>
-        Caso fique com alguma dúvida ou a requisição peça algo diferente do normal, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir com a execução.
+        <div class="section-tag">Busca no Manual</div>
+        <div class="section-title">Pesquisar Conteúdo</div>
       </div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" type="text" placeholder="Digite um termo... ex: trigger, release, ISTM, parâmetro" oninput="doSearch(this.value)" />
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕ Limpar</button>
+    </div>
+    <p class="search-hint">RESULTADOS</p>
+    <div class="search-results" id="searchResults">
+      <div class="search-empty"><div class="search-empty-icon">🔍</div>Digite algo acima para buscar nos procedimentos do manual.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ GLOSSÁRIO ══════════════ -->
+  <div class="section" id="glossario">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3)">📖</div>
+      <div>
+        <div class="section-tag">Referência Técnica</div>
+        <div class="section-title">Glossário de Termos</div>
+      </div>
+    </div>
+    <div class="glossary-filter">
+      <button class="gfilter active" onclick="filterGlossary('all', this)">Todos</button>
+      <button class="gfilter" onclick="filterGlossary('W', this)">W</button>
+      <button class="gfilter" onclick="filterGlossary('I', this)">I</button>
+      <button class="gfilter" onclick="filterGlossary('R', this)">R</button>
+      <button class="gfilter" onclick="filterGlossary('S', this)">S</button>
+      <button class="gfilter" onclick="filterGlossary('T', this)">T</button>
+      <button class="gfilter" onclick="filterGlossary('A', this)">A</button>
+      <button class="gfilter" onclick="filterGlossary('H', this)">H</button>
+    </div>
+    <div class="glossary-grid" id="glossaryGrid">
+
+      <div class="glossary-item" data-letter="A">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">A</span>
+          <span class="glossary-term">Application</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Conjunto de jobs agrupados no Workload que representam um processo de negócio completo. Cada application possui um nome único e é disparada via trigger no módulo Define.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="A">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">A</span>
+          <span class="glossary-term">Arguments to pass</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Campo do Reset Definitions onde são informados os argumentos que serão passados ao script durante a execução. Cada argumento deve ser separado por <strong>um espaço</strong>. Definidos no checklist da RIT.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="H">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">H</span>
+          <span class="glossary-term">Hold (Em espera)</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Status em que a application fica após ser disparada com a opção <em>Submit application on hold</em> marcada. A requisição aparece em <strong>laranja</strong> no Monitor e aguarda configuração e liberação manual antes de executar.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="I">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">I</span>
+          <span class="glossary-term">ISTM</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Sistema de gerenciamento de chamados utilizado pela Dataprev para registrar, acompanhar e fechar requisições de TI. É onde as RITs são abertas pelos solicitantes e onde o operador registra a conclusão da execução.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="R">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">R</span>
+          <span class="glossary-term">Release Application</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Ação executada via botão direito no Monitor após configurar todos os jobs em Hold. Libera a application para execução efetiva no servidor. É necessário informar o número da RIT no campo de comentário ao confirmar.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="R">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">R</span>
+          <span class="glossary-term">Reset Definitions</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Ação aplicada a cada job individualmente no Monitor (Job Avulso) para sobrescrever o script e os argumentos padrão com os valores definidos no checklist da RIT. Deve ser feita em <strong>todos os jobs</strong> antes do Release.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="R">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">R</span>
+          <span class="glossary-term">Retrieve Spool File</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Log de execução completo de um job, acessível via botão direito no Monitor. Deve ser anexado ao comentário do ISTM nos casos de <strong>erro</strong>, pois contém informações detalhadas sobre a falha para análise técnica.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="R">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">R</span>
+          <span class="glossary-term">RIT</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Requisição de TI aberta no ISTM pelo solicitante. Contém as instruções, parâmetros e checklist necessários para a execução do job. O número da RIT é utilizado como referência em toda a operação.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="S">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">S</span>
+          <span class="glossary-term">Script / Command Name</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Nome do arquivo de script ou comando que será executado pelo job. Informado no campo de mesmo nome durante o Reset Definitions, conforme descrito no checklist da RIT.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="S">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">S</span>
+          <span class="glossary-term">Subscribe with filter</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Função do Monitor que cria um filtro de visualização para acompanhar execuções específicas. Permite monitorar apenas as applications relacionadas à RIT em andamento, sem poluição visual de outros processos.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="T">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">T</span>
+          <span class="glossary-term">Trigger</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Ação de disparo de uma application no módulo Define do Workload. Ao acionar o trigger, o operador define quais jobs serão executados e informa os parâmetros necessários para o processamento.</div>
+      </div>
+
+      <div class="glossary-item" data-letter="W">
+        <div class="glossary-header" onclick="toggleGlossary(this)">
+          <span class="glossary-letter">W</span>
+          <span class="glossary-term">Workload</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="glossary-body">Sistema de agendamento e execução de jobs utilizado pela Dataprev. Possui dois módulos principais: <strong>Monitor</strong> (acompanhamento de execuções em tempo real) e <strong>Define</strong> (configuração e disparo de applications).</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ FAQ ══════════════ -->
+  <div class="section" id="faq">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)">❓</div>
+      <div>
+        <div class="section-tag">Dúvidas Frequentes</div>
+        <div class="section-title">FAQ</div>
+      </div>
+    </div>
+    <div class="faq-grid">
+
+      <div class="faq-item">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span class="faq-q-icon">❓</span>
+          <span class="faq-question">Esqueci de marcar "Submit application on hold". O que fazer?</span>
+          <span class="faq-tag faq-tag-geral">Geral</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="faq-body">Se a application já foi disparada sem o Hold, ela pode ter iniciado a execução imediatamente. Verifique o status no Monitor. Caso ainda não tenha executado, tente cancelar. Se já estiver rodando, acione o <strong>líder ou gerente da equipe</strong> para orientação antes de qualquer ação.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span class="faq-q-icon">❓</span>
+          <span class="faq-question">A requisição não aparece em laranja no Monitor após o trigger. O que pode ser?</span>
+          <span class="faq-tag faq-tag-geral">Geral</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="faq-body">Verifique se o filtro <code>Subscribe with filter</code> está configurado corretamente com o nome da application e a RIT. Confirme também se o servidor selecionado no Monitor é o mesmo utilizado no Define. Se o problema persistir, consulte o líder.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span class="faq-q-icon">❓</span>
+          <span class="faq-question">No Job Avulso, preciso fazer Reset Definitions em todos os jobs mesmo que o script seja igual?</span>
+          <span class="faq-tag faq-tag-av">Avulso</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="faq-body">Sim. O Reset Definitions deve ser aplicado em <strong>todos os jobs</strong> listados no checklist, independentemente de os valores serem iguais. Isso garante que os parâmetros corretos da RIT estejam ativos para esta execução específica.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span class="faq-q-icon">❓</span>
+          <span class="faq-question">No Job Eventual, os parâmetros estão como N/A na requisição. Deixo em branco ou coloco "N/A"?</span>
+          <span class="faq-tag faq-tag-ev">Eventual</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="faq-body">Deixe o campo <strong>em branco</strong>. Quando a requisição informa N/A ou não informa nada, o campo de parâmetro deve ficar vazio — não escreva "N/A" no campo, pois isso pode ser interpretado como valor pelo sistema.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span class="faq-q-icon">❓</span>
+          <span class="faq-question">Qual a diferença entre Job Avulso e Job Eventual?</span>
+          <span class="faq-tag faq-tag-geral">Geral</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="faq-body">O <strong>Job Avulso</strong> exige Reset Definitions em cada job com script e argumentos fixos do checklist, e os parâmetros do trigger seguem um padrão definido (RIT, servidor, usuário, e-mail). O <strong>Job Eventual</strong> é mais flexível: os parâmetros vêm da requisição do ISTM (podendo ficar em branco), não exige Reset Definitions e permite visualizar o histórico de execuções via <code>Last # of generations</code>.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span class="faq-q-icon">❓</span>
+          <span class="faq-question">O job finalizou com erro. O que incluir no comentário do ISTM?</span>
+          <span class="faq-tag faq-tag-geral">Geral</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="faq-body">Use o modelo <strong>"Com Erro"</strong> disponível na aba ISTM de cada seção. É obrigatório incluir dois itens: (1) os <strong>Details</strong> do job, obtidos via botão direito → Details no Monitor; e (2) o <strong>Retrieve Spool File</strong>, que é o log completo da execução. Ambos são necessários para análise da equipe responsável.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span class="faq-q-icon">❓</span>
+          <span class="faq-question">Posso fechar o chamado no ISTM antes do job terminar de executar?</span>
+          <span class="faq-tag faq-tag-geral">Geral</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="faq-body">Sim, mas use o modelo correto. Se o job ainda está rodando, use o modelo <strong>"Em Execução"</strong> com o código <em>Processo em execução</em>. Quando finalizar, monitore o resultado no Workload e, se necessário, atualize o chamado com o resultado final.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-header" onclick="toggleFaq(this)">
+          <span class="faq-q-icon">❓</span>
+          <span class="faq-question">Como saber qual servidor (HML, PRD ou DEV) usar?</span>
+          <span class="faq-tag faq-tag-geral">Geral</span>
+          <span class="phase-toggle">▾</span>
+        </div>
+        <div class="faq-body">O servidor correto é indicado no <strong>checklist da RIT</strong> no ISTM. No Job Avulso, o Parâmetro 2 corresponde ao servidor — use apenas o prefixo antes do primeiro ponto do nome. Em caso de dúvida, consulte o líder ou gerente antes de disparar.</div>
+      </div>
+
     </div>
   </div>
 
@@ -1104,66 +1351,172 @@
 
 <footer>
   <div class="footer-brand"><strong>DIOT</strong> · Dataprev &mdash; Manual Interno de Operações</div>
-  <div class="footer-ver">v1.2 · maio 2025</div>
+  <div class="footer-ver">v2.0 · maio 2025</div>
 </footer>
 
 <script>
+  /* ── Accordion (phases) ── */
   function toggle(id) {
-    const card = document.getElementById(id);
-    card.classList.toggle('open');
+    document.getElementById(id).classList.toggle('open');
   }
 
-  // Nav active state on scroll
-  const sections = ['avulso','eventual','procedure'];
-  const pills = document.querySelectorAll('.pill');
+  /* ── Accordion (glossary) ── */
+  function toggleGlossary(header) {
+    header.parentElement.classList.toggle('open');
+  }
+
+  /* ── Accordion (FAQ) ── */
+  function toggleFaq(header) {
+    header.parentElement.classList.toggle('open');
+  }
+
+  /* ── Filter by execution type ── */
+  const TYPE_SECTIONS = ['avulso', 'eventual', 'procedure'];
+
+  /* ── Apply filter on page load ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    const defaultBtn = document.querySelector('.type-pill[data-type="avulso"]');
+    filterType('avulso', defaultBtn);
+  });
+
+  function filterType(type, btn) {
+    // Update active pill
+    document.querySelectorAll('.type-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Show/hide sections
+    TYPE_SECTIONS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (type === 'all' || type === id) {
+        el.style.display = '';
+        el.style.animation = 'fadeUp .4s ease both';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+
+    // Scroll to top of content smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Nav highlight on scroll (only anchor pills) ── */
+  const allSections = ['busca','glossario','faq'];
+  const anchorPills = document.querySelectorAll('.pill:not(.type-pill)');
   window.addEventListener('scroll', () => {
     let current = '';
-    sections.forEach(id => {
+    allSections.forEach(id => {
       const el = document.getElementById(id);
       if (el && el.getBoundingClientRect().top < 120) current = id;
     });
-    pills.forEach(p => {
-      p.classList.toggle('active', p.getAttribute('href') === '#' + current);
-    });
+    anchorPills.forEach(p => p.classList.toggle('active', p.getAttribute('href') === '#' + current));
   });
 
+  /* ── ISTM tabs (Avulso) ── */
   function switchTab(tab) {
-    document.querySelectorAll('.itab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-    document.querySelectorAll('.itab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
+    document.querySelectorAll('.itab:not(.ev-itab)').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    document.querySelectorAll('.itab-panel[id^="tab-"]').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
   }
 
-  const templates = {
-    'em-execucao': `Bom dia, Prezado.\n\nApplication disparada conforme requisitos.\nProcesso em execução:\n\n[Colar aqui o Print ou Texto dos Details do Workload]`,
-    'com-sucesso': `Bom dia, prezado.\n\nApplication executada com sucesso:\n\n[Colar aqui os Details extraídos do Monitor via botão direito > Details]`,
-    'com-erro': `Boa tarde, prezado.\n\nApplication disparada conforme requisitos.\n\nA execução apresentou erro:\n\n[Colar aqui os Details extraídos do Monitor via botão direito > Details]\n\n[Histórico de log — Retrieve Spool File]`
-  };
-
-  function copyTemplate(key) {
-    navigator.clipboard.writeText(templates[key]).then(() => {
-      const panel = document.getElementById('tab-' + key);
-      const btn = panel.querySelector('.copy-btn');
-      btn.textContent = 'Copiado!';
-      setTimeout(() => btn.textContent = 'Copiar', 2000);
-    });
-  }
+  /* ── ISTM tabs (Eventual) ── */
   function switchTabEv(tab) {
     document.querySelectorAll('.ev-itab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
     document.querySelectorAll('[id^="ev-tab-"]').forEach(p => p.classList.toggle('active', p.id === 'ev-tab-' + tab));
   }
 
+  /* ── Copy templates (Avulso) ── */
+  const templates = {
+    'em-execucao': `Bom dia, Prezado.\n\nApplication disparada conforme requisitos.\nProcesso em execução:\n\n[Colar aqui o Print ou Texto dos Details do Workload]`,
+    'com-sucesso': `Bom dia, prezado.\n\nApplication executada com sucesso:\n\n[Colar aqui os Details extraídos do Monitor via botão direito > Details]`,
+    'com-erro': `Boa tarde, prezado.\n\nApplication disparada conforme requisitos.\n\nA execução apresentou erro:\n\n[Colar aqui os Details extraídos do Monitor via botão direito > Details]\n\n[Histórico de log — Retrieve Spool File]`
+  };
+  function copyTemplate(key) {
+    navigator.clipboard.writeText(templates[key]).then(() => {
+      const panel = document.getElementById('tab-' + key);
+      const btn = panel.querySelector('.copy-btn');
+      btn.textContent = 'Copiado!'; setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
+  }
+
+  /* ── Copy templates (Eventual) ── */
   const templatesEv = {
     'em-execucao': `Bom dia, Prezado.\n\nApplication disparada conforme requisitos.\nProcesso em execução:\n\n[Colar aqui o Print ou Texto dos Details do Workload]`,
     'com-sucesso': `Bom dia, prezado.\n\nApplication executada com sucesso:\n\n[Colar aqui os Details extraídos do Monitor via botão direito > Details]`,
     'com-erro': `Boa tarde, prezado.\n\nApplication disparada conforme requisitos.\n\nA execução apresentou erro:\n\n[Colar aqui os Details extraídos do Monitor via botão direito > Details]\n\n[Histórico de log — Retrieve Spool File]`
   };
-
   function copyTemplateEv(key) {
     navigator.clipboard.writeText(templatesEv[key]).then(() => {
       const panel = document.getElementById('ev-tab-' + key);
       const btn = panel.querySelector('.copy-btn');
-      btn.textContent = 'Copiado!';
-      setTimeout(() => btn.textContent = 'Copiar', 2000);
+      btn.textContent = 'Copiado!'; setTimeout(() => btn.textContent = 'Copiar', 2000);
     });
+  }
+
+  /* ── Glossary filter ── */
+  function filterGlossary(letter, btn) {
+    document.querySelectorAll('.gfilter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.glossary-item').forEach(item => {
+      item.style.display = (letter === 'all' || item.dataset.letter === letter) ? '' : 'none';
+    });
+  }
+
+  /* ── Search ── */
+  const searchIndex = [
+    { tag: 'Avulso · Fase 01', title: 'Monitor — Subscribe with filter', section: '#avulso', text: 'Selecione o tipo de servidor Homologação Produção Desenvolvimento. Clique com botão direito Subscribe with filter. Filter Name nome da application. Application with names Nome da RIT. Save and Subscribe.' },
+    { tag: 'Avulso · Fase 02', title: 'Define — Trigger', section: '#avulso', text: 'Download search string application. Event Name trigger. Submit application on hold. Select Jobs checklist. Parâmetro 1 RIT ISTM. Parâmetro 2 servidor prefixo. Parâmetro 3 usuário. Parâmetro 4 e-mail solicitante.' },
+    { tag: 'Avulso · Fase 03', title: 'Monitor — Reset Definitions e Release', section: '#avulso', text: 'Requisição laranja hold. Reset Definitions job. Script command name. Arguments to pass espaço argumentos. Release Application número RIT comentário.' },
+    { tag: 'Avulso · ISTM', title: 'Finalização no ISTM — Avulso', section: '#avulso', text: 'Estado Resolvido. Código fechamento processo em execução com sucesso erro. Comentário Details Workload Retrieve Spool File.' },
+    { tag: 'Eventual · Fase 01', title: 'Monitor — Last # of generations', section: '#eventual', text: 'Subscribe with filter. Application with names. Last # of generations 3 5 últimas execuções. Save and Subscribe.' },
+    { tag: 'Eventual · Fase 02', title: 'Define — Trigger Eventual', section: '#eventual', text: 'Download trigger Submit application on hold. Select Jobs fases ISTM. Parâmetros ISTM N/A branco requisição.' },
+    { tag: 'Eventual · Fase 03', title: 'Monitor — Verificação e Release Eventual', section: '#eventual', text: 'Requisição laranja hold. Verificar jobs fases. Script command. Release Application RIT comentário.' },
+    { tag: 'ISTM', title: 'Modelo — Em Execução', section: '#avulso', text: 'Bom dia Prezado Application disparada conforme requisitos Processo em execução Details Workload.' },
+    { tag: 'ISTM', title: 'Modelo — Com Sucesso', section: '#avulso', text: 'Bom dia prezado Application executada com sucesso Details Monitor botão direito.' },
+    { tag: 'ISTM', title: 'Modelo — Com Erro', section: '#avulso', text: 'Boa tarde prezado Application disparada erro Details Monitor Retrieve Spool File histórico log.' },
+    { tag: 'Glossário', title: 'Workload', section: '#glossario', text: 'Sistema agendamento execução jobs Dataprev Monitor Define applications.' },
+    { tag: 'Glossário', title: 'ISTM', section: '#glossario', text: 'Sistema gerenciamento chamados Dataprev RIT requisição TI.' },
+    { tag: 'Glossário', title: 'Hold', section: '#glossario', text: 'Status laranja application aguardando liberação release após trigger.' },
+    { tag: 'Glossário', title: 'Trigger', section: '#glossario', text: 'Disparo de application no Define Workload jobs parâmetros.' },
+    { tag: 'Glossário', title: 'Reset Definitions', section: '#glossario', text: 'Sobrescrever script argumentos job checklist RIT.' },
+    { tag: 'Glossário', title: 'Retrieve Spool File', section: '#glossario', text: 'Log execução completo job erro análise técnica.' },
+    { tag: 'Glossário', title: 'RIT', section: '#glossario', text: 'Requisição TI ISTM solicitante checklist parâmetros.' },
+  ];
+
+  function highlight(text, term) {
+    const re = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+  }
+
+  function doSearch(val) {
+    const q = val.trim().toLowerCase();
+    const resultsEl = document.getElementById('searchResults');
+    const clearBtn  = document.getElementById('searchClear');
+    clearBtn.style.display = q.length > 0 ? 'block' : 'none';
+
+    if (q.length < 2) {
+      resultsEl.innerHTML = '<div class="search-empty"><div class="search-empty-icon">🔍</div>Digite ao menos 2 caracteres para buscar.</div>';
+      return;
+    }
+    const hits = searchIndex.filter(item =>
+      item.title.toLowerCase().includes(q) || item.text.toLowerCase().includes(q) || item.tag.toLowerCase().includes(q)
+    );
+    if (!hits.length) {
+      resultsEl.innerHTML = `<div class="search-empty"><div class="search-empty-icon">😕</div>Nenhum resultado para "<strong>${val}</strong>". Tente outro termo.</div>`;
+      return;
+    }
+    resultsEl.innerHTML = hits.map(h => `
+      <div class="search-result-item" onclick="location.href='${h.section}'">
+        <div class="sri-tag">${h.tag}</div>
+        <div class="sri-title">${highlight(h.title, q)}</div>
+        <div class="sri-preview">${highlight(h.text.substring(0, 120), q)}…</div>
+      </div>`).join('');
+  }
+
+  function clearSearch() {
+    const input = document.getElementById('searchInput');
+    input.value = '';
+    doSearch('');
+    input.focus();
   }
 </script>
 </body>
