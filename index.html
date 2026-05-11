@@ -114,32 +114,211 @@
     max-width: 520px;
   }
 
-  /* ── NAV PILLS ── */
+  /* ── NAV ── */
   .nav {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(6,13,31,.85);
+    background: rgba(6,13,31,.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
+    padding: 10px 24px;
   }
   .nav-inner {
     max-width: 960px;
     margin: 0 auto;
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
     align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
   }
-  .nav-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: .1em;
-    text-transform: uppercase;
+
+  /* Botão principal de tipos */
+  .nav-type-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(14,165,233,.18), rgba(29,78,216,.18));
+    border: 1px solid rgba(14,165,233,.45);
+    padding: 9px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all .2s ease;
+    flex-shrink: 0;
+  }
+  .nav-type-btn:hover { background: linear-gradient(135deg, rgba(14,165,233,.28), rgba(29,78,216,.28)); border-color: rgba(14,165,233,.7); }
+  .nav-type-btn .btn-label { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+  .nav-type-btn .btn-sub { font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: .06em; color: var(--accent); text-transform: uppercase; }
+  .nav-type-btn .btn-main { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.2; }
+  .nav-type-btn .btn-arrow { font-size: 10px; color: var(--accent); margin-left: 2px; transition: transform .2s; }
+  .nav-type-btn.open .btn-arrow { transform: rotate(180deg); }
+
+  /* Badge tipo ativo */
+  .nav-active-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    background: rgba(14,165,233,.1);
+    border: 1px solid rgba(14,165,233,.3);
+    padding: 6px 14px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .nav-active-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; animation: pulse 1.5s ease-in-out infinite; }
+
+  /* Separador + ferramentas */
+  .nav-sep { width: 1px; height: 22px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+  .nav-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--muted);
-    margin-right: 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s;
   }
+  .nav-tool-btn:hover, .nav-tool-btn.active { color: var(--accent); border-color: rgba(14,165,233,.4); background: rgba(14,165,233,.06); }
+  .nav-tool-btn:focus { outline: none; }
+
+  /* ── MODAL OVERLAY ── */
+  .type-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    backdrop-filter: blur(6px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .type-modal-overlay.open { display: flex; }
+
+  .type-modal {
+    background: #0d1b2e;
+    border: 1px solid rgba(14,165,233,.25);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 88vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(14,165,233,.08);
+    animation: modalIn .25s ease both;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(.95) translateY(16px); }
+    to   { opacity: 1; transform: scale(1)  translateY(0); }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #fff;
+  }
+  .modal-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .06em;
+    margin-top: 2px;
+  }
+  .modal-close {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+  .modal-close:hover { color: #fff; border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.05); }
+
+  .modal-body {
+    overflow-y: auto;
+    padding: 16px 20px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  /* Grade de tipos no modal */
+  .type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 480px) { .type-grid { grid-template-columns: 1fr; } }
+
+  .type-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all .18s ease;
+    text-align: left;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .type-card:hover { border-color: rgba(14,165,233,.45); background: rgba(14,165,233,.06); }
+  .type-card.active { border-color: rgba(14,165,233,.6); background: rgba(14,165,233,.1); }
+  .type-card.active .tc-name { color: var(--accent); }
+  .type-card.soon { opacity: .55; cursor: default; }
+  .type-card.soon:hover { border-color: var(--border); background: var(--surface); }
+
+  .tc-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+    border: 1px solid;
+  }
+  .tc-info { flex: 1; min-width: 0; }
+  .tc-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: .06em; margin-bottom: 2px; }
+  .tc-name { font-size: 13px; font-weight: 600; color: #e2e8f0; line-height: 1.3; }
+  .tc-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .05em;
+    padding: 2px 7px;
+    border-radius: 6px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+  .badge-ok { background: rgba(16,185,129,.12); color: var(--green); border: 1px solid rgba(16,185,129,.3); }
+  .badge-soon { background: rgba(100,116,139,.1); color: #64748b; border: 1px solid rgba(100,116,139,.2); }
   .pill {
     display: inline-flex;
     align-items: center;
@@ -513,7 +692,68 @@
     border: 1px solid;
   }
 
-  /* ── COMING SOON ── */
+  /* ── LIGHTBOX ── */
+  .screen-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .05em;
+    color: var(--accent);
+    background: rgba(14,165,233,.08);
+    border: 1px solid rgba(14,165,233,.25);
+    padding: 4px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .screen-btn:hover { background: rgba(14,165,233,.16); border-color: rgba(14,165,233,.5); }
+
+  .lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.88);
+    backdrop-filter: blur(8px);
+    z-index: 1200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .lightbox-overlay.open { display: flex; }
+  .lightbox-img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 24px 64px rgba(0,0,0,.6);
+    object-fit: contain;
+  }
+  .lightbox-caption {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .lightbox-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.06);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,.12); }
   .coming-soon {
     background: var(--surface);
     border: 1px dashed var(--border);
@@ -584,9 +824,10 @@
   /* ── NAV SEPARATOR ── */
   .nav-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
 
-  /* ── Button pills (type filter) ── */
+  /* ── Button pills (legacy, mantido para compatibilidade) ── */
   button.pill { font-family: 'DM Sans', sans-serif; background: transparent; }
   button.pill:focus { outline: none; }
+  button.aux-pill { font-family: 'DM Sans', sans-serif; background: transparent; }
 
   /* ── Nav highlight on scroll ── */
   .nav-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
@@ -678,17 +919,131 @@
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-inner">
-    <span class="nav-label">Tipos</span>
-    <button class="pill type-pill active" data-type="avulso" onclick="filterType('avulso', this)">⚡ Avulso <span class="pill-num">01</span></button>
-    <button class="pill type-pill" data-type="eventual" onclick="filterType('eventual', this)">🔁 Eventual <span class="pill-num">02</span></button>
-    <button class="pill type-pill" data-type="procedure" onclick="filterType('procedure', this)">⚙️ Procedure <span class="pill-num">03</span></button>
-    <button class="pill type-pill" data-type="all" onclick="filterType('all', this)">☰ Todos</button>
+    <button class="nav-type-btn" id="typeMenuBtn" onclick="openTypeModal()">
+      <span style="font-size:18px">📋</span>
+      <span class="btn-label">
+        <span class="btn-sub">Selecionar</span>
+        <span class="btn-main">Tipo de Execução</span>
+      </span>
+      <span class="btn-arrow">▼</span>
+    </button>
+    <div id="navActiveBadge" class="nav-active-badge" style="display:none">
+      <span class="nav-active-dot"></span>
+      <span id="navActiveName">—</span>
+    </div>
     <div class="nav-sep"></div>
-    <a class="pill" href="#busca">🔍 Busca</a>
-    <a class="pill" href="#glossario">📖 Glossário</a>
-    <a class="pill" href="#faq">❓ FAQ</a>
+    <a class="nav-tool-btn" href="#busca">🔍 Busca</a>
+    <button class="nav-tool-btn aux-pill" onclick="toggleAux('glossario', this)">📖 Glossário</button>
+    <button class="nav-tool-btn aux-pill" onclick="toggleAux('faq', this)">❓ FAQ</button>
   </div>
 </nav>
+
+<!-- MODAL TIPOS DE EXECUÇÃO -->
+<div class="type-modal-overlay" id="typeModalOverlay" onclick="overlayClick(event)">
+  <div class="type-modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Tipo de Execução</div>
+        <div class="modal-subtitle">Selecione o procedimento desejado</div>
+      </div>
+      <button class="modal-close" onclick="closeTypeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="type-grid">
+        <!-- Ordem alfabética -->
+        <button class="type-card soon" onclick="selectType('agendar','📅','Agendar Execução Eventual',this)">
+          <div class="tc-icon" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)">📅</div>
+          <div class="tc-info">
+            <div class="tc-num">09</div>
+            <div class="tc-name">Agendar Execução Eventual</div>
+            <span class="tc-badge badge-soon">Em breve</span>
+          </div>
+        </button>
+        <button class="type-card soon" onclick="selectType('alt-application','✏️','Alteração de Application',this)">
+          <div class="tc-icon" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)">✏️</div>
+          <div class="tc-info">
+            <div class="tc-num">05</div>
+            <div class="tc-name">Alteração de Application</div>
+            <span class="tc-badge badge-soon">Em breve</span>
+          </div>
+        </button>
+        <button class="type-card" onclick="selectType('avulso','⚡','Avulso',this)">
+          <div class="tc-icon" style="background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)">⚡</div>
+          <div class="tc-info">
+            <div class="tc-num">01</div>
+            <div class="tc-name">Avulso</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
+        <button class="type-card soon" onclick="selectType('cad-email','📧','Cadastro de E-mail',this)">
+          <div class="tc-icon" style="background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)">📧</div>
+          <div class="tc-info">
+            <div class="tc-num">06</div>
+            <div class="tc-name">Cadastro de E-mail para Recebimento, Execução e Log</div>
+            <span class="tc-badge badge-soon">Em breve</span>
+          </div>
+        </button>
+        <button class="type-card soon" onclick="selectType('disp-log','📄','Disponibilizar Log de Execução',this)">
+          <div class="tc-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)">📄</div>
+          <div class="tc-info">
+            <div class="tc-num">10</div>
+            <div class="tc-name">Disponibilizar Log de Execução</div>
+            <span class="tc-badge badge-soon">Em breve</span>
+          </div>
+        </button>
+        <button class="type-card" onclick="selectType('eventual','🔁','Eventual',this)">
+          <div class="tc-icon" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)">🔁</div>
+          <div class="tc-info">
+            <div class="tc-num">02</div>
+            <div class="tc-name">Eventual</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
+        <button class="type-card soon" onclick="selectType('inc-email','➕','Inclusão de E-mail',this)">
+          <div class="tc-icon" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3)">➕</div>
+          <div class="tc-info">
+            <div class="tc-num">07</div>
+            <div class="tc-name">Inclusão de E-mail para Recebimento, Execução e Log</div>
+            <span class="tc-badge badge-soon">Em breve</span>
+          </div>
+        </button>
+        <button class="type-card soon" onclick="selectType('interromper','⏹️','Interromper Application Eventual',this)">
+          <div class="tc-icon" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3)">⏹️</div>
+          <div class="tc-info">
+            <div class="tc-num">08</div>
+            <div class="tc-name">Interromper Application Eventual</div>
+            <span class="tc-badge badge-soon">Em breve</span>
+          </div>
+        </button>
+        <button class="type-card soon" onclick="selectType('procedure','⚙️','Procedure',this)">
+          <div class="tc-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)">⚙️</div>
+          <div class="tc-info">
+            <div class="tc-num">03</div>
+            <div class="tc-name">Procedure</div>
+            <span class="tc-badge badge-soon">Em breve</span>
+          </div>
+        </button>
+        <button class="type-card" onclick="selectType('gis','🗄️','RDMS — Avaliar e Executar',this)">
+          <div class="tc-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)">🗄️</div>
+          <div class="tc-info">
+            <div class="tc-num">04</div>
+            <div class="tc-name">RDMS — Avaliar e Executar</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
+        <button class="type-card soon" onclick="selectType('trans-gis','🔐','Transmissão GIS',this)">
+          <div class="tc-icon" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3)">🔐</div>
+          <div class="tc-info">
+            <div class="tc-num">11</div>
+            <div class="tc-name">Transmissão GIS</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;">Cofre de Senhas / PuTTY</div>
+            <span class="tc-badge badge-soon">Em breve</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="wrap">
 
@@ -703,14 +1058,14 @@
     </div>
 
     <div class="progress-wrap">
-      <div class="progress-label"><span>Progresso do procedimento</span><span>3 fases</span></div>
+      <div class="progress-label"><span>Progresso do procedimento</span><span>3 passos</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
     </div>
 
     <!-- FASE 1 · MONITOR -->
     <div class="phase-card open" id="card-monitor">
       <div class="phase-header" onclick="toggle('card-monitor')">
-        <span class="phase-num">FASE 01</span>
+        <span class="phase-num">PASSO 01</span>
         <span class="phase-title">🖥️ Monitor — Preparação do Ambiente</span>
         <div class="phase-env">
           <span class="env-tag env-hml">HML</span>
@@ -752,7 +1107,7 @@
     <!-- FASE 2 · DEFINE -->
     <div class="phase-card open" id="card-define">
       <div class="phase-header" onclick="toggle('card-define')">
-        <span class="phase-num">FASE 02</span>
+        <span class="phase-num">PASSO 02</span>
         <span class="phase-title">🎯 Define — Disparo (Trigger)</span>
         <div class="phase-env">
           <span class="env-tag env-hml">HML</span>
@@ -826,7 +1181,7 @@
     <!-- FASE 3 · MONITOR RELEASE -->
     <div class="phase-card open" id="card-release">
       <div class="phase-header" onclick="toggle('card-release')">
-        <span class="phase-num">FASE 03</span>
+        <span class="phase-num">PASSO 03</span>
         <span class="phase-title">🚀 Monitor — Configuração e Release</span>
         <div class="phase-env">
           <span class="env-tag env-hml">HML</span>
@@ -978,7 +1333,7 @@
       </div>
     </div>
     <div class="progress-wrap">
-      <div class="progress-label"><span>Progresso do procedimento</span><span>3 fases</span></div>
+      <div class="progress-label"><span>Progresso do procedimento</span><span>3 passos</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
     </div>
     <div class="callout">
@@ -988,7 +1343,7 @@
 
     <div class="phase-card open" id="ev-monitor">
       <div class="phase-header" onclick="toggle('ev-monitor')">
-        <span class="phase-num">FASE 01</span>
+        <span class="phase-num">PASSO 01</span>
         <span class="phase-title">🖥️ Monitor — Preparação do Ambiente</span>
         <div class="phase-env"><span class="env-tag env-hml">HML</span><span class="env-tag env-prd">PRD</span><span class="env-tag env-dev">DEV</span></div>
         <span class="phase-toggle">▾</span>
@@ -1008,7 +1363,7 @@
 
     <div class="phase-card open" id="ev-define">
       <div class="phase-header" onclick="toggle('ev-define')">
-        <span class="phase-num">FASE 02</span>
+        <span class="phase-num">PASSO 02</span>
         <span class="phase-title">🎯 Define — Disparo (Trigger)</span>
         <div class="phase-env"><span class="env-tag env-hml">HML</span><span class="env-tag env-prd">PRD</span><span class="env-tag env-dev">DEV</span></div>
         <span class="phase-toggle">▾</span>
@@ -1038,7 +1393,7 @@
 
     <div class="phase-card open" id="ev-release">
       <div class="phase-header" onclick="toggle('ev-release')">
-        <span class="phase-num">FASE 03</span>
+        <span class="phase-num">PASSO 03</span>
         <span class="phase-title">🚀 Monitor — Verificação e Release</span>
         <div class="phase-env"><span class="env-tag env-hml">HML</span><span class="env-tag env-prd">PRD</span><span class="env-tag env-dev">DEV</span></div>
         <span class="phase-toggle">▾</span>
@@ -1099,6 +1454,300 @@
       <p>O guia para execução de Jobs via Procedure será disponibilizado em breve nesta seção.</p>
     </div>
     <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida ou a requisição peça algo diferente do normal, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir com a execução.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 4 · RDMS ══════════════ -->
+  <div class="section" id="gis">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)">🗄️</div>
+      <div>
+        <div class="section-tag">Tipo 04 / Procedimento Padrão</div>
+        <div class="section-title">RDMS — Avaliar e Executar</div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Progresso do procedimento</span><span>3 passos</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">🎯</span>
+      <div><strong>Objetivo:</strong> Avaliar se existem Jobs para executar no banco de dados no horário solicitado — <strong>Diário, Semanal, Mensal ou Anual</strong>. O tipo <strong>Eventual</strong> não deve ser requisitado para este fluxo; o analista já deve ter ciência disso.</div>
+    </div>
+
+    <!-- PASSO 01 · ABRIR RDM -->
+    <div class="phase-card open" id="gis-p1">
+      <div class="phase-header" onclick="toggle('gis-p1')">
+        <span class="phase-num">PASSO 01</span>
+        <span class="phase-title">📂 Abrir a RDM</span>
+        <div class="phase-env"></div>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">Abra a <strong>RDM</strong> correspondente à solicitação e clique na aba <code>Detalhes</code>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSO 02 · VERIFICAR IMPACTO EM BANCO -->
+    <div class="phase-card" id="gis-p2">
+      <div class="phase-header" onclick="toggle('gis-p2')">
+        <span class="phase-num">PASSO 02</span>
+        <span class="phase-title">🔍 Verificar Impacto em Banco de Dados</span>
+        <div class="phase-env"></div>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              Localize o <strong>Banco de Dados</strong> na requisição e clique em <code>Abrir Registro</code>.
+              <div class="alert alert-info" style="margin-top:10px;margin-bottom:0">
+                <span class="alert-icon">💡</span>
+                <div>Alternativa: na aba <code>Registros Relacionados &gt;&gt; ICS Afetados</code>, clique sobre o banco de dados listado.</div>
+              </div>
+              <button class="screen-btn" onclick="openScreen('','Tela: Abrir Registro / ICS Afetados')">🖼️ Ver tela</button>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">Na página do registro aberto, clique em <code>Abrir Visualização de Dependências</code>.
+              <button class="screen-btn" onclick="openScreen('','Tela: Abrir Visualização de Dependências')">🖼️ Ver tela</button>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">Na tela de dependências, clique com o <strong>botão direito</strong> sobre o banco de dados que está <strong>piscando</strong> e selecione <code>Abrir Formulário</code>.
+              <button class="screen-btn" onclick="openScreen('','Tela: Dependências — Abrir Formulário')">🖼️ Ver tela</button>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              No formulário, verifique a <strong>seção e os itens relacionados</strong>. Analise se existem Jobs relacionados e se têm impacto no horário da execução solicitada.
+              <button class="screen-btn" onclick="openScreen('','Tela: Formulário — Seção e Itens Relacionados')">🖼️ Ver tela</button>
+              <div class="params-box" style="margin-top:14px;">
+                <div class="params-title">Exemplos de análise</div>
+                <div class="param-row">
+                  <span class="param-key" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">Ex. 1</span>
+                  <span class="param-val">Itens <strong>sem</strong> Jobs relacionados → <span style="color:var(--green)">sem impacto</span>, pode prosseguir.</span>
+                </div>
+                <div class="param-row">
+                  <span class="param-key" style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--orange)">Ex. 2</span>
+                  <span class="param-val">Itens <strong>com</strong> Jobs relacionados → avalie se o horário dos Jobs conflita com a janela solicitada.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSO 03 · REGISTRAR TAREFAS -->
+    <div class="phase-card" id="gis-p3">
+      <div class="phase-header" onclick="toggle('gis-p3')">
+        <span class="phase-num">PASSO 03</span>
+        <span class="phase-title">✅ Registrar Tarefas de Mudança na RDM</span>
+        <div class="phase-env"></div>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+
+        <div class="alert alert-warn" style="margin-bottom:20px;">
+          <span class="alert-icon">⚠️</span>
+          <div>Os passos abaixo só devem ser executados se <strong>não houver impacto</strong> identificado na análise anterior.</div>
+        </div>
+
+        <!-- Tarefa 1: Avaliar Job -->
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+            <span style="background:rgba(14,165,233,.15);border:1px solid rgba(14,165,233,.3);border-radius:6px;padding:2px 8px;">Tarefa 1</span> Avaliar Job Consulta BD
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">6</div>
+              <div class="step-content">Na aba <code>Tarefas de Mudanças</code> da requisição, localize a tarefa <strong>Avaliar Job Consulta BD</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">7</div>
+              <div class="step-content">
+                Clique em <code>Designar para mim</code> e preencha os campos:
+                <div class="params-box" style="margin-top:12px;">
+                  <div class="params-title">Parâmetros</div>
+                  <div class="param-row"><span class="param-key">Tipo</span><span class="param-val">Planejamento</span></div>
+                  <div class="param-row"><span class="param-key">Estado</span><span class="param-val">Concluído</span></div>
+                  <div class="param-row"><span class="param-key">Código de Fechamento</span><span class="param-val">Sucesso</span></div>
+                  <div class="param-row"><span class="param-key">Anotações</span><span class="param-val">Sem impacto</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarefa 2: Executar Job -->
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:20px;">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+            <span style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:6px;padding:2px 8px;">Tarefa 2</span> Executar Job Consulta BD
+          </div>
+          <div class="alert alert-info" style="margin-bottom:14px;">
+            <span class="alert-icon">🕐</span>
+            <div>Execute somente se estiver dentro do <strong>horário de execução</strong> solicitado.</div>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">8</div>
+              <div class="step-content">Na aba <code>Tarefas de Mudanças</code> da requisição, localize a tarefa <strong>Executar Job Consulta BD</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">9</div>
+              <div class="step-content">
+                Clique em <code>Designar para mim</code> e preencha os campos:
+                <div class="params-box" style="margin-top:12px;">
+                  <div class="params-title">Parâmetros</div>
+                  <div class="param-row"><span class="param-key">Tipo</span><span class="param-val">Planejamento</span></div>
+                  <div class="param-row"><span class="param-key">Estado</span><span class="param-val">Concluído</span></div>
+                  <div class="param-row"><span class="param-key">Código de Fechamento</span><span class="param-val">Sucesso</span></div>
+                  <div class="param-row"><span class="param-key">Anotações</span><span class="param-val">Sem impacto pela pesquisa do CMDB</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso a requisição peça algo diferente do normal, consulte o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 5 · ALTERAÇÃO DE APPLICATION ══════════════ -->
+  <div class="section" id="alt-application">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)">✏️</div>
+      <div>
+        <div class="section-tag">Tipo 05 / Em breve</div>
+        <div class="section-title">Alteração de Application</div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="coming-soon-icon">✏️</div>
+      <h3>Procedimento em Elaboração</h3>
+      <p>O guia para Alteração de Application será disponibilizado em breve nesta seção.</p>
+    </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 6 · CADASTRO DE E-MAIL ══════════════ -->
+  <div class="section" id="cad-email">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)">📧</div>
+      <div>
+        <div class="section-tag">Tipo 06 / Em breve</div>
+        <div class="section-title">Cadastro de E-mail para Recebimento, Execução e Log</div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="coming-soon-icon">📧</div>
+      <h3>Procedimento em Elaboração</h3>
+      <p>O guia para Cadastro de E-mail será disponibilizado em breve nesta seção.</p>
+    </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 7 · INCLUSÃO DE E-MAIL ══════════════ -->
+  <div class="section" id="inc-email">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3)">➕</div>
+      <div>
+        <div class="section-tag">Tipo 07 / Em breve</div>
+        <div class="section-title">Inclusão de E-mail para Recebimento, Execução e Log</div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="coming-soon-icon">➕</div>
+      <h3>Procedimento em Elaboração</h3>
+      <p>O guia para Inclusão de E-mail será disponibilizado em breve nesta seção.</p>
+    </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 8 · INTERROMPER EVENTUAL ══════════════ -->
+  <div class="section" id="interromper">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3)">⏹️</div>
+      <div>
+        <div class="section-tag">Tipo 08 / Em breve</div>
+        <div class="section-title">Interromper Application Eventual</div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="coming-soon-icon">⏹️</div>
+      <h3>Procedimento em Elaboração</h3>
+      <p>O guia para Interromper Application Eventual será disponibilizado em breve nesta seção.</p>
+    </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 9 · AGENDAR EVENTUAL ══════════════ -->
+  <div class="section" id="agendar">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)">📅</div>
+      <div>
+        <div class="section-tag">Tipo 09 / Em breve</div>
+        <div class="section-title">Agendar Execução Eventual</div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="coming-soon-icon">📅</div>
+      <h3>Procedimento em Elaboração</h3>
+      <p>O guia para Agendar Execução Eventual será disponibilizado em breve nesta seção.</p>
+    </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 10 · DISPONIBILIZAR LOG ══════════════ -->
+  <div class="section" id="disp-log">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)">📄</div>
+      <div>
+        <div class="section-tag">Tipo 10 / Em breve</div>
+        <div class="section-title">Disponibilizar Log de Execução</div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="coming-soon-icon">📄</div>
+      <h3>Procedimento em Elaboração</h3>
+      <p>O guia para Disponibilizar Log de Execução será disponibilizado em breve nesta seção.</p>
+    </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 11 · TRANSMISSÃO GIS ══════════════ -->
+  <div class="section" id="trans-gis">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3)">🔐</div>
+      <div>
+        <div class="section-tag">Tipo 11 / Em breve</div>
+        <div class="section-title">Transmissão GIS</div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="coming-soon-icon">🔐</div>
+      <h3>Procedimento em Elaboração</h3>
+      <p>O guia para execução via <strong>Cofre de Senhas</strong> ou <strong>PuTTY</strong> será disponibilizado assim que as informações do passo a passo forem fornecidas.</p>
+    </div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
   </div>
 
   <!-- ══════════════ BUSCA ══════════════ -->
@@ -1371,24 +2020,64 @@
   }
 
   /* ── Filter by execution type ── */
-  const TYPE_SECTIONS = ['avulso', 'eventual', 'procedure'];
+  const TYPE_SECTIONS = ['avulso','eventual','procedure','gis','alt-application','cad-email','inc-email','interromper','agendar','disp-log','trans-gis'];
 
-  /* ── Apply filter on page load ── */
+  /* ── Lightbox ── */
+  function openScreen(src, caption) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxCaption').textContent = caption || '';
+    document.getElementById('lightboxOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(e) {
+    if (e && e.target !== document.getElementById('lightboxOverlay') && !e.target.classList.contains('lightbox-close')) return;
+    document.getElementById('lightboxOverlay').classList.remove('open');
+    document.getElementById('lightboxImg').src = '';
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox({target: document.getElementById('lightboxOverlay')}); closeTypeModal(); } });
+
+  /* ── Init on load ── */
   document.addEventListener('DOMContentLoaded', () => {
-    const defaultBtn = document.querySelector('.type-pill[data-type="avulso"]');
-    filterType('avulso', defaultBtn);
+    ['glossario','faq'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    // Hide all type sections on load — user must pick from modal
+    TYPE_SECTIONS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
   });
 
-  function filterType(type, btn) {
-    // Update active pill
-    document.querySelectorAll('.type-pill').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
+  /* ── Modal open/close ── */
+  function openTypeModal() {
+    document.getElementById('typeModalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeTypeModal() {
+    document.getElementById('typeModalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function overlayClick(e) {
+    if (e.target === document.getElementById('typeModalOverlay')) closeTypeModal();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTypeModal(); });
 
-    // Show/hide sections
+  /* ── Select type from modal ── */
+  function selectType(type, icon, name, cardEl) {
+    // Ignore if "soon"
+    if (cardEl.classList.contains('soon')) return;
+
+    // Mark active card
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
+    cardEl.classList.add('active');
+
+    // Show only selected section
     TYPE_SECTIONS.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      if (type === 'all' || type === id) {
+      if (id === type) {
         el.style.display = '';
         el.style.animation = 'fadeUp .4s ease both';
       } else {
@@ -1396,20 +2085,46 @@
       }
     });
 
-    // Scroll to top of content smoothly
+    // Hide glossário/faq, reset aux buttons
+    ['glossario','faq'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.aux-pill').forEach(p => p.classList.remove('active'));
+
+    // Update badge in nav
+    const badge = document.getElementById('navActiveBadge');
+    document.getElementById('navActiveName').textContent = icon + ' ' + name;
+    badge.style.display = 'inline-flex';
+
+    closeTypeModal();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /* ── Nav highlight on scroll (only anchor pills) ── */
+  /* ── Toggle Glossário / FAQ ── */
+  function toggleAux(id, btn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isVisible = el.style.display !== 'none';
+    el.style.display = isVisible ? 'none' : '';
+    if (!isVisible) {
+      el.style.animation = 'fadeUp .4s ease both';
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    btn.classList.toggle('active', !isVisible);
+  }
+
+  /* kept for legacy calls (filterType not used anymore) */
+  function filterType(type, btn) { }
+
+  /* ── Nav highlight on scroll ── */
   const allSections = ['busca','glossario','faq'];
-  const anchorPills = document.querySelectorAll('.pill:not(.type-pill)');
   window.addEventListener('scroll', () => {
     let current = '';
     allSections.forEach(id => {
       const el = document.getElementById(id);
       if (el && el.getBoundingClientRect().top < 120) current = id;
     });
-    anchorPills.forEach(p => p.classList.toggle('active', p.getAttribute('href') === '#' + current));
   });
 
   /* ── ISTM tabs (Avulso) ── */
@@ -1519,5 +2234,12 @@
     input.focus();
   }
 </script>
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
 </body>
 </html>
