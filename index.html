@@ -1040,6 +1040,60 @@
             <span class="tc-badge badge-ok">Disponível</span>
           </div>
         </button>
+        <button class="type-card" onclick="selectType('trans-connect','📡','Transmissão CONNECT',this)">
+          <div class="tc-icon" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3)">📡</div>
+          <div class="tc-info">
+            <div class="tc-num">12</div>
+            <div class="tc-name">Transmissão CONNECT</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;">DURJCV01 · trans_arq / trans_pro</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
+        <button class="type-card" onclick="selectType('passagem-objeto','📦','Passagem de Objeto',this)">
+          <div class="tc-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)">📦</div>
+          <div class="tc-info">
+            <div class="tc-num">13</div>
+            <div class="tc-name">Passagem de Objeto</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;">Nexus / Git AAS · f121p004</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
+        <button class="type-card" onclick="selectType('sap-bods','🔬','SAP BODS',this)">
+          <div class="tc-icon" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)">🔬</div>
+          <div class="tc-info">
+            <div class="tc-num">14</div>
+            <div class="tc-name">SAP BODS</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;">Acessar e Executar Job</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
+        <button class="type-card" onclick="selectType('maiprev-tar','📥','MAIPREV — Download TAR',this)">
+          <div class="tc-icon" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3)">📥</div>
+          <div class="tc-info">
+            <div class="tc-num">15</div>
+            <div class="tc-name">MAIPREV — Download TAR</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;">wget · tar · chmod</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
+        <button class="type-card" onclick="selectType('oozie','🐘','Cancelar Job Oozie',this)">
+          <div class="tc-icon" style="background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)">🐘</div>
+          <div class="tc-info">
+            <div class="tc-num">16</div>
+            <div class="tc-name">Cancelar Job Oozie</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;">Hadoop / Datalake</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
+        <button class="type-card" onclick="selectType('jtx-jexec','🔌','JTX e JEXEC',this)">
+          <div class="tc-icon" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3)">🔌</div>
+          <div class="tc-info">
+            <div class="tc-num">17</div>
+            <div class="tc-name">JTX e JEXEC</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;">Firewall · Portas · Config Windows</div>
+            <span class="tc-badge badge-ok">Disponível</span>
+          </div>
+        </button>
       </div>
     </div>
   </div>
@@ -2166,6 +2220,424 @@
     <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Operações na Ferramenta ATIV afetam diretamente o servidor de produção. Em caso de dúvida, consulte o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
   </div>
 
+  <!-- ══════════════ SEÇÃO 12 · TRANSMISSÃO CONNECT ══════════════ -->
+  <div class="section" id="trans-connect">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3)">📡</div>
+      <div>
+        <div class="section-tag">Tipo 12 / Procedimento Padrão</div>
+        <div class="section-title">Transmissão CONNECT</div>
+      </div>
+    </div>
+
+    <div class="alert alert-info" style="margin-bottom:16px">
+      <span class="alert-icon">ℹ️</span>
+      <div><strong>Servidores CONNECT:</strong> <code>DURJCV01</code> (RJ) · <code>DUDFAS02</code> (DF) · <code>DUSPMV02</code> (SP). Dependendo do sentido da transmissão, utilize o servidor correto e o script adequado.</div>
+    </div>
+
+    <div class="phase-card open" id="tc-p1">
+      <div class="phase-header" onclick="toggle('tc-p1')">
+        <span class="phase-num">PASSO 01</span>
+        <span class="phase-title">📡 Acessar Servidor e Escolher Script</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">Conectar ao servidor <code>DURJCV01</code> via SSH/PuTTY.</div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">Dependendo do sentido da transmissão, utilizar o script correto:<br>
+              <code>trans_arq.sh</code> → DTP para Entidade (ex: <code>FSUBCSG12</code> — Retorno do Consignado)<br>
+              <code>trans_pro.sh</code> → Entidade para DTP (ex: <code>FSUBCSG11</code> — Chegada do Consignado)
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">Informar os parâmetros de transmissão conforme o sistema for solicitando:<br>
+              — <strong>HOST</strong> onde residem os arquivos (ex: <code>UXDFL020</code>)<br>
+              — <strong>Nome da Rotina</strong> (ex: <code>fsgpfpg02</code>)<br>
+              — <strong>Tipo</strong> <code>D</code> ou <code>R</code><br>
+              — Se usa matriz ou inicial do banco
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="tc-p2">
+      <div class="phase-header" onclick="toggle('tc-p2')">
+        <span class="phase-num">PASSO 02</span>
+        <span class="phase-title">📋 Verificar Log da Transmissão</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">Acessar o diretório de log:<br><code>cd /prd1/bancos/trab</code></div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">Listar do mais recente para o mais antigo:<br><code>ls -lt | pg</code></div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">Visualizar o arquivo de log da transmissão:<br><code>more FSUBPBF11.20200412.071950.22524</code></div>
+          </div>
+        </div>
+        <div class="alert alert-info" style="margin-top:12px;margin-bottom:0">
+          <span class="alert-icon">💡</span>
+          <div>Log de arquivos enviados via GIS: <code>/prd1/usr/gis/trab</code> no servidor <code>v121p002001</code>. Use <code>ls -lhat | head</code> para achar o arquivo e <code>cat</code> para extrair o log.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="obs-box"><span class="obs-box-icon">⚠️</span><div><strong>Atenção — Servidor Windows:</strong> Para trans_arq via Applications que fazem GET em servidor Windows, inserir o diretório no arquivo <code>c:\wrapper\conf\jtxserver.properties</code> nas linhas <code>ALLOWD</code> e <code>ALLOWU</code>.</div></div>
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Consulte o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 13 · PASSAGEM DE OBJETO ══════════════ -->
+  <div class="section" id="passagem-objeto">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)">📦</div>
+      <div>
+        <div class="section-tag">Tipo 13 / Procedimento Padrão</div>
+        <div class="section-title">Passagem de Objeto — Nexus / Git AAS</div>
+      </div>
+    </div>
+
+    <div class="alert alert-info" style="margin-bottom:16px">
+      <span class="alert-icon">ℹ️</span>
+      <div><strong>Servidor de passagem:</strong> <code>f121p004</code> · <strong>Usuário:</strong> <code>ssh nome.sobrenome@localhost</code> (LDAP) → <code>ativ</code></div>
+    </div>
+
+    <div class="phase-card open" id="po-p1">
+      <div class="phase-header" onclick="toggle('po-p1')">
+        <span class="phase-num">PASSO 01</span>
+        <span class="phase-title">📦 Passagem via NEXUS (Plataforma Baixa exceto BI e Gen.Con)</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content">Acessar o servidor de passagem <code>f121p004</code>.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content">Baixar o nível para usuário: <code>ssh nome.sobrenome@localhost</code></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Executar <code>ativ</code> e selecionar a opção <strong>Nexus</strong> (ou Git AAS se destino for Windows).</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content">Inserir os dados solicitados: <code>GROUP_ID</code>, <code>ARTIFACT_ID</code>, <code>VERSION</code>, <code>ARQUIVO</code>, <code>Servidor</code>.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content">Extrair o resultado e colocar na RITM/REQ no ISTM.</div></div>
+        </div>
+        <div class="params-box" style="margin-top:16px">
+          <div class="params-title">📋 Exemplo — Passagem Nexus (RQS 2959844)</div>
+          <div class="param-row"><span class="param-key">GROUP_ID</span><span class="param-val"><code>repository</code></span></div>
+          <div class="param-row"><span class="param-key">ARTIFACT_ID</span><span class="param-val"><code>EsocialDtpCargaBatch</code></span></div>
+          <div class="param-row"><span class="param-key">VERSION</span><span class="param-val"><code>2.6.118</code></span></div>
+          <div class="param-row"><span class="param-key">ARQUIVO</span><span class="param-val"><code>EsocialDtpCargaBatch-2.6.118.tar</code></span></div>
+        </div>
+        <div class="alert alert-warn" style="margin-top:12px;margin-bottom:0">
+          <span class="alert-icon">⚠️</span>
+          <div>Para cópia com servidor destino <strong>Windows</strong>, escolha a opção <strong>AAS — Cópia de Objeto-Plataforma Baixa AAS</strong> no ativ. Informar o nome completo do servidor.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Consulte o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 14 · SAP BODS ══════════════ -->
+  <div class="section" id="sap-bods">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)">🔬</div>
+      <div>
+        <div class="section-tag">Tipo 14 / Procedimento Padrão</div>
+        <div class="section-title">SAP BODS — Acessar e Executar Job</div>
+      </div>
+    </div>
+
+    <div class="phase-card open" id="bods-p1">
+      <div class="phase-header" onclick="toggle('bods-p1')">
+        <span class="phase-num">PASSO 01</span>
+        <span class="phase-title">🔬 Acessar o SAP BODS</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content">Colocar o server no cofre de senhas.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content">Preencher os campos:<br>
+            <code>System</code>: nome do servidor (ex: <code>v222p999</code>)<br>
+            <code>User Name</code>: User LDAP<br>
+            <code>Password</code>: Senha do LDAP<br>
+            <code>Authentication</code>: LDAP
+          </div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Clicar no botão <strong>Administration</strong>.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content">Navegar em <code>Batch &gt;&gt; Produção</code>.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content">Realizar <code>Search</code> pelo job (job definido no campo <em>arguments</em> nos Details do job na application no Workload).</div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-content">Clicar em <strong>Abort</strong> se necessário cancelar. Verificar links de erros e outras opções de Status.</div></div>
+        </div>
+        <div class="alert alert-warn" style="margin-top:12px;margin-bottom:0">
+          <span class="alert-icon">⚠️</span>
+          <div>Ao abortar uma application de SAP BODS no Workload (geralmente ETL), é necessário matar o processo também no SAP BODS. Isso se aplica a praticamente todas as applications abortadas — os processos devem ser finalizados nas ferramentas onde são executados.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="bods-p2">
+      <div class="phase-header" onclick="toggle('bods-p2')">
+        <span class="phase-num">PASSO 02</span>
+        <span class="phase-title">▶️ Executar Job SAP BODS</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content">Acessar o servidor e logar com credenciais LDAP (igual ao Passo 01).</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content">Clicar em <strong>Administration</strong> → <code>Batch &gt;&gt; Produção</code> → aba <strong>Batch Job Configuration</strong> (aguardar carregar).</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Realizar <code>Search</code> pelo job (<kbd>Ctrl+F</kbd>) e verificar o nome do projeto.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content">Clicar em <strong>Execute</strong>.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content">Expandir <code>+ Global Variables</code> → inserir os parâmetros descritos na RITM. Verificar também o servidor (<code>v321p022</code> ou <code>v321p021</code>).</div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-content">Clicar em <strong>Execute</strong> (botão abaixo à esquerda).</div></div>
+          <div class="step"><div class="step-num">7</div><div class="step-content">Extrair o log. Aparece acima à esquerda → perto da guia <em>"CLICK HERE TO VIEW THE LOG"</em>.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Consulte o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 15 · MAIPREV DOWNLOAD TAR ══════════════ -->
+  <div class="section" id="maiprev-tar">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3)">📥</div>
+      <div>
+        <div class="section-tag">Tipo 15 / Procedimento Padrão</div>
+        <div class="section-title">MAIPREV — Download TAR</div>
+      </div>
+    </div>
+
+    <div class="phase-card open" id="tar-p1">
+      <div class="phase-header" onclick="toggle('tar-p1')">
+        <span class="phase-num">PASSO 01</span>
+        <span class="phase-title">📥 Download, Extração e Permissões</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content">Acessar o servidor informado na RQS (ex: <code>uxdfl020</code>).</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content">Acessar o diretório de destino informado na RQS (ex: <code>/prd1/usr/cadprv/apl/</code>).</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Realizar o download do arquivo no repositório informado:<br>
+            <code>wget http://www-bin.prevnet/repository/binary-staging/br/gov/dataprev/cadprev/CadprevJobAvulso/1.57.1%xxxx/CadprevJobAvulso-1.57.1%xxxx.tar</code>
+          </div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content">Extrair o arquivo baixado:<br><code>tar -xvf CadprevJobAvulso-1.57.1%xxxx.tar</code></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content">Alterar usuário do arquivo extraído:<br><code>chown cadprv P.CDP.PRO.001.CADPREV.JOBAVULSO.JAR</code></div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-content">Alterar grupo do arquivo extraído:<br><code>chgrp cadprv P.CDP.PRO.001.CADPREV.JOBAVULSO.JAR</code></div></div>
+          <div class="step"><div class="step-num">7</div><div class="step-content">Alterar permissões:<br><code>chmod 775 P.CDP.PRO.001.CADPREV.JOBAVULSO.JAR</code></div></div>
+          <div class="step"><div class="step-num">8</div><div class="step-content">Verificar formato final:<br><code>ls -lhatr P.CDP.PRO.001.CADPREV.JOBAVULSO.JAR</code><br>Esperado: <code>-rwxrwxr-x 1 cadprv cadprv 52K Dec 22 12:03 P.CDP.PRO.001.CADPREV.JOBAVULSO.JAR</code></div></div>
+          <div class="step"><div class="step-num">9</div><div class="step-content">Executar no Workload a application descrita na RQS (ex: <code>DF_P_DTP_AVL_GEN_PADRAO_AVULSO</code>) seguindo o Checklist anexo.</div></div>
+        </div>
+        <div class="alert alert-warn" style="margin-top:12px;margin-bottom:0">
+          <span class="alert-icon">⚠️</span>
+          <div><strong>IMPORTANTE:</strong> Só executar esta RQS após o fechamento da RQS anterior informada no campo de dependência.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Consulte o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 16 · CANCELAR JOB OOZIE ══════════════ -->
+  <div class="section" id="oozie">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)">🐘</div>
+      <div>
+        <div class="section-tag">Tipo 16 / Procedimento Padrão</div>
+        <div class="section-title">Cancelar Job Oozie — Hadoop / Datalake</div>
+      </div>
+    </div>
+
+    <div class="alert alert-warn" style="margin-bottom:16px">
+      <span class="alert-icon">⚠️</span>
+      <div>Quando solicitado o cancelamento de alguma App <code>SP_P_DTP_HDP_DLK*</code> por RQS, cancelar desta forma. A App falhará — é necessário executar <strong>Complete</strong> no job informando a RQS e avisar a DIMO para não criar incidente.</div>
+    </div>
+
+    <div class="phase-card open" id="oozie-p1">
+      <div class="phase-header" onclick="toggle('oozie-p1')">
+        <span class="phase-num">OPÇÃO 01</span>
+        <span class="phase-title">🐘 Cancelar via ATIV (recomendado)</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content">Acessar o servidor <code>v321p630</code>.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content">Acessar o diretório <code>/usr/local/bin</code> e visualizar: <code>cat cancelar_job_oozie.sh</code></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Selecionar o ID que foi apresentado no <em>Retrieve Spoolfile</em> do Workload.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content">No ATIV, selecionar a opção <strong>Cancelar JOB Oozie</strong> quando logado com LDAP. O ATIV mostrará o ID dos jobs do Oozie em processamento no Ambari.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content">Pressionar Enter para finalizar.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="oozie-p2">
+      <div class="phase-header" onclick="toggle('oozie-p2')">
+        <span class="phase-num">OPÇÃO 02</span>
+        <span class="phase-title">💻 Cancelar por Linha de Comando</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content">Acessar o servidor de produção <code>v321p630</code> com usuário <code>ingestao_hadoop</code>:<br><code>su ingestao_hadoop</code></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content">Obter o ticket Kerberos:<br><code>kinit -k -t /etc/security/keytabs/ingestao_hadoop.keytab ingestao_hadoop@PRDDATALAKE.HDPDTP</code></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Obter o ID do Job no log do Workload (<em>Retrieve Spool File</em>):<br>Ex: <code>0000702-191011101531844-oozie-oozi-W</code></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content">Interromper o processamento:<br><code>oozie job --oozie http://v321p628.prevnet:11000/oozie -kill &lt;NUMERO_DO_JOB_OOZIE&gt;</code></div></div>
+        </div>
+        <div class="alert alert-info" style="margin-top:12px;margin-bottom:0">
+          <span class="alert-icon">💡</span>
+          <div>Após o cancelamento, executar <strong>Complete</strong> no job do Workload informando a RQS que solicitou o cancelamento.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Consulte o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>
+  </div>
+
+  <!-- ══════════════ SEÇÃO 17 · JTX E JEXEC ══════════════ -->
+  <div class="section" id="jtx-jexec">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3)">🔌</div>
+      <div>
+        <div class="section-tag">Tipo 17 / Referência Técnica</div>
+        <div class="section-title">JTX e JEXEC — Firewall, Portas e Configuração</div>
+      </div>
+    </div>
+
+    <div class="alert alert-info" style="margin-bottom:16px">
+      <span class="alert-icon">ℹ️</span>
+      <div><strong>Regra geral de diagnóstico com Telnet:</strong><br>
+        <code>CONNECTION TIMEOUT</code> → Solicitar abertura de porta no Firewall (ver modelo RDM 288811)<br>
+        <code>CONNECTION REFUSED</code> → Problema no JTX / JEXEC<br>
+        <strong>Portas Workload:</strong> 60500 a 60600 (normalmente 60555 para JTX antigo, 60600 para JTX novo)
+      </div>
+    </div>
+
+    <div class="phase-card open" id="jtx-p1">
+      <div class="phase-header" onclick="toggle('jtx-p1')">
+        <span class="phase-num">REF 01</span>
+        <span class="phase-title">🔌 Portas e Servidores</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="params-box">
+          <div class="params-title">Servidores Workload</div>
+          <div class="param-row"><span class="param-key">Produção</span><span class="param-val"><code>pworkload.prevnet</code> — v121p395 e v121p396</span></div>
+          <div class="param-row"><span class="param-key">Homologação</span><span class="param-val"><code>hworkload.prevnet</code> — 10.0.186.64</span></div>
+          <div class="param-row"><span class="param-key">Desenvolvimento</span><span class="param-val"><code>DWORKLOAD.prevnet</code> — v121d152 10.0.190.6</span></div>
+        </div>
+        <div class="params-box" style="margin-top:12px">
+          <div class="params-title">Portas</div>
+          <div class="param-row"><span class="param-key">JTX Antigo</span><span class="param-val"><code>60555</code></span></div>
+          <div class="param-row"><span class="param-key">JTX Novo</span><span class="param-val"><code>60600</code></span></div>
+          <div class="param-row"><span class="param-key">Range FW</span><span class="param-val"><code>60500 – 60600</code> (bidirecional)</span></div>
+          <div class="param-row"><span class="param-key">WADE → Agente</span><span class="param-val"><code>7520/TCP</code></span></div>
+          <div class="param-row"><span class="param-key">Agente → WADE</span><span class="param-val"><code>7507/TCP</code></span></div>
+          <div class="param-row"><span class="param-key">CV3 e CV1</span><span class="param-val"><code>Porta 21</code></span></div>
+        </div>
+        <div class="params-box" style="margin-top:12px">
+          <div class="params-title">Servidores GIS</div>
+          <div class="param-row"><span class="param-key">Produção</span><span class="param-val"><code>v121p002001</code> [10.0.143.185] · <code>v121p002002</code> [10.0.143.186]</span></div>
+          <div class="param-row"><span class="param-key">Homologação</span><span class="param-val"><code>v121h002004</code></span></div>
+          <div class="param-row"><span class="param-key">Triangulação</span><span class="param-val"><code>f121p004</code> — Passagem de objetos</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="jtx-p2">
+      <div class="phase-header" onclick="toggle('jtx-p2')">
+        <span class="phase-num">REF 02</span>
+        <span class="phase-title">🪟 Config JTX em Servidor Windows</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content">Localizar o arquivo de configuração em:<br><code>C:\wrapper\conf\jtxserver.properties</code></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content">Editar e inserir o diretório onde será feito o GET. Exemplo:<br>
+            <code>PORT=60555</code><br>
+            <code>ALLOWD=c:\\Transferencias,C:\\Users\\UsuarioAAS01,c:\\migracao\\afferolab</code><br>
+            <code>ALLOWU=c:\\Transferencias,C:\\Users\\UsuarioAAS01,c:\\migracao\\afferolab</code><br>
+            <code>LOGFILE=c:\\temp\\JtxServer.log</code>
+          </div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Atenção: usar <strong>duas barras</strong> <code>\\</code> conforme o exemplo. Inserir os diretórios em ambas as linhas <code>ALLOWD</code> e <code>ALLOWU</code>.</div></div>
+        </div>
+        <div class="alert alert-info" style="margin-top:12px;margin-bottom:0">
+          <span class="alert-icon">💡</span>
+          <div>Log do JtxServer: <code>C:\jtxsServer\logs</code><br>
+          Testar porta com Telnet: <code>telnet servidor 60600</code> (JTX novo) ou <code>60555</code> (JTX antigo).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="jtx-p3">
+      <div class="phase-header" onclick="toggle('jtx-p3')">
+        <span class="phase-num">REF 03</span>
+        <span class="phase-title">🆕 Novo JtxServer — Ativação e Verificação</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="alert alert-info" style="margin-bottom:12px">
+          <span class="alert-icon">ℹ️</span>
+          <div>O Novo JtxServer usa a porta <code>60600</code>. Quando ocorrer falha em transferência de arquivos via Applications (GERA_LISTA, TX_TH), ativar via ATIV antes de transferir o incidente.</div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content">Logar no servidor origem e destino com LDAP e acessar o <code>ativ</code>.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content">Selecionar e executar as opções existentes:<br>
+            ☐ Ativar o JtxServer<br>
+            ☐ Ativar o JexecS
+          </div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content">Selecionar as novas opções inseridas no ATIV:<br>
+            ☐ Desativar JtxsServer (Novo)<br>
+            ☐ Ativar JtxsServer (Novo)<br>
+            ☐ Reiniciar JtxsServer (Novo)<br>
+            ☐ Verificar status JtxsServer (Novo)<br>
+            ☐ Instalar o JTXS Novo
+          </div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content">Resubmeter o job que estava em falha para verificar se a transferência ocorrerá com sucesso.</div></div>
+        </div>
+        <div class="alert alert-info" style="margin-top:12px;margin-bottom:0">
+          <span class="alert-icon">💡</span>
+          <div>Ativar JEXEC por linha de comando (resolve quando não acha servidor na passagem):<br><code>java -cp /usr/local/bin/jexec JexecS &amp;</code><br><br>
+          Como a regra de FW é para o range 60500–60600, não é necessário liberar portas adicionais para o JTX novo (60600) já estar coberto.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="jtx-p4">
+      <div class="phase-header" onclick="toggle('jtx-p4')">
+        <span class="phase-num">REF 04</span>
+        <span class="phase-title">📋 Modelo de RDM — Abertura de Firewall</span>
+        <span class="phase-toggle">▾</span>
+      </div>
+      <div class="phase-body">
+        <div class="istm-block">
+          <h4>📋 Modelo de Solicitação de Firewall Bidirecional</h4>
+          <div class="comment-template" style="position:relative">
+            <button class="copy-btn" onclick="(function(){var t=document.getElementById('fw-comment-text').innerText;navigator.clipboard.writeText(t).then(function(){var b=event.target;var orig=b.textContent;b.textContent='✓';setTimeout(function(){b.textContent=orig},1500)})})()">Copiar</button>
+            <span id="fw-comment-text">Solicito criar regra de firewall bidirecional conforme especificado abaixo:
+
+Origem: server01
+Destino: server02
+Protocolo/porta: TCP / Range: 60500 - 60600
+
+Origem: server02
+Destino: server01
+Protocolo/porta: TCP / Range: 60500 - 60600</span>
+          </div>
+          <p style="margin-top:8px;font-size:12px;color:var(--muted)">Lembrar de incluir o servidor de contingência quando for pedir regra de FW para produção.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Consulte o <strong>líder ou gerente da equipe</strong> antes de prosseguir. Manual completo de reinicialização JTX/JEXEC disponível no OneDrive (pasta Learning).</div></div>
+  </div>
+
   <!-- ══════════════ BUSCA ══════════════ -->
   <div class="section" id="busca">
     <div class="section-header">
@@ -2436,7 +2908,7 @@
   }
 
   /* ── Filter by execution type ── */
-  const TYPE_SECTIONS = ['avulso','eventual','procedure','gis','alt-application','cad-email','inc-email','interromper','agendar','disp-log','trans-gis'];
+  const TYPE_SECTIONS = ['avulso','eventual','procedure','gis','alt-application','cad-email','inc-email','interromper','agendar','disp-log','trans-gis','trans-connect','passagem-objeto','sap-bods','maiprev-tar','oozie','jtx-jexec'];
 
   /* ── Lightbox ── */
   let _lbImages = [], _lbIdx = 0;
