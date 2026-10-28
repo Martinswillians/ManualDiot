@@ -1039,6 +1039,123 @@
   }
 
   /* responsive */
+  /* ── ADMIN ── */
+  .sp-admin-btn {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: rgba(255,255,255,.9);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background .15s;
+    margin-left: 8px;
+  }
+  .sp-admin-btn:hover { background: rgba(255,255,255,.25); }
+  .sp-admin-btn.logged { background: rgba(255,255,255,.25); border-color: rgba(255,255,255,.5); }
+
+  .admin-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .admin-overlay.open { display: flex; }
+
+  .admin-modal {
+    background: #fff;
+    border-radius: 8px;
+    border-top: 4px solid var(--sp-purple);
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.2);
+    animation: modalIn .2s ease both;
+    overflow: hidden;
+  }
+  .admin-modal-wide { max-width: 680px; max-height: 90vh; display: flex; flex-direction: column; }
+
+  .admin-modal-hdr {
+    background: var(--sp-purple-light);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .admin-modal-hdr h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--sp-purple); margin: 0; }
+  .admin-modal-hdr p { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+  .admin-modal-close { background: none; border: none; font-size: 18px; color: var(--muted); cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+  .admin-modal-close:hover { background: rgba(0,0,0,.06); color: var(--sp-purple); }
+
+  .admin-modal-body { padding: 24px; overflow-y: auto; }
+
+  .admin-field { margin-bottom: 16px; }
+  .admin-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 6px; font-family: 'DM Sans', sans-serif; }
+  .admin-field input, .admin-field select {
+    width: 100%; padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .88rem;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+    transition: border-color .15s;
+    box-sizing: border-box;
+  }
+  .admin-field input:focus, .admin-field select:focus { border-color: var(--sp-purple); box-shadow: 0 0 0 3px rgba(78,74,158,.1); }
+  .admin-field input[type="password"] { letter-spacing: .1em; }
+
+  .admin-btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+  .admin-btn {
+    padding: 9px 20px;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background .15s;
+  }
+  .admin-btn-primary { background: var(--sp-purple); color: #fff; }
+  .admin-btn-primary:hover { background: var(--sp-purple-dark); }
+  .admin-btn-secondary { background: var(--border); color: var(--text); }
+  .admin-btn-secondary:hover { background: #d1d0ce; }
+  .admin-btn-danger { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+  .admin-btn-danger:hover { background: #fee2e2; }
+
+  .admin-error { background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: 4px; padding: 10px 14px; font-size: .84rem; color: #b91c1c; margin-top: 12px; display: none; }
+  .admin-success { background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #22c55e; border-radius: 4px; padding: 10px 14px; font-size: .84rem; color: #15803d; margin-top: 12px; display: none; }
+
+  .admin-tabs { display: flex; border-bottom: 2px solid var(--border); padding: 0 20px; gap: 4px; background: #fafafa; }
+  .admin-tab { padding: 10px 16px; font-size: .88rem; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: 'DM Sans', sans-serif; transition: color .15s; }
+  .admin-tab.active { color: var(--sp-purple); border-bottom-color: var(--sp-purple); }
+  .admin-tab-content { display: none; padding: 20px; overflow-y: auto; max-height: calc(90vh - 140px); }
+  .admin-tab-content.active { display: block; }
+
+  .admin-list-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; background: #fafafa;
+    border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px;
+  }
+  .admin-list-item-text { flex: 1; font-size: .85rem; }
+  .admin-list-item-label { font-weight: 600; color: var(--text); display: block; margin-bottom: 2px; }
+  .admin-list-item-url { font-size: .78rem; color: var(--muted); font-family: 'DM Mono', monospace; word-break: break-all; }
+  .admin-list-del { background: none; border: 1px solid #fecaca; color: #ef4444; border-radius: 4px; padding: 4px 8px; font-size: 11px; cursor: pointer; flex-shrink: 0; }
+  .admin-list-del:hover { background: #fef2f2; }
+  .admin-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .admin-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 12px; font-family: 'DM Mono', monospace; }
+
+  .admin-badge { font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 4px; font-family: 'DM Mono', monospace; font-weight: 600; }
+  .admin-badge-info { background: var(--sp-purple-light); color: var(--sp-purple); border-color: rgba(78,74,158,.2); }
+
   @media (max-width: 640px) {
     .phase-env { display: none; }
     .section-icon { width: 44px; height: 44px; font-size: 18px; }
@@ -1146,11 +1263,12 @@
   </nav>
   <div class="sp-nav-right">
     <div class="sp-members">71 membros</div>
+    <button class="sp-admin-btn" id="adminTopBtn" onclick="openAdminLogin()" title="Painel Admin">⚙ Admin</button>
   </div>
 </div>
 
 <!-- HERO -->
-<div class="sp-hero">
+<div class="sp-hero" id="spHero" style="display:none">
   <div class="sp-hero-content">
     <div class="sp-hero-tag">DATAPREV · EQUIPE DIOT · WORKLOAD</div>
     <h1>Manual de Execução<br>de <span>Jobs</span></h1>
@@ -1164,7 +1282,7 @@
 </div>
 
 <!-- DASHBOARD STRIP -->
-<div class="sp-dashboard">
+<div class="sp-dashboard" id="spDashboard" style="display:none">
   <div class="sp-comunicados">
     <div class="sp-card-header">
       Comunicados
@@ -3435,6 +3553,364 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
   </div>
   <div class="lightbox-caption" id="lightboxCaption"></div>
 </div>
+
+<!-- ── MODAL LOGIN ADMIN ── -->
+<div class="admin-overlay" id="adminLoginOverlay">
+  <div class="admin-modal">
+    <div class="admin-modal-hdr">
+      <div>
+        <h3>🔐 Painel Administrativo</h3>
+        <p>Acesso restrito — equipe DIOT</p>
+      </div>
+      <button class="admin-modal-close" onclick="closeAdminLogin()">✕</button>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-field">
+        <label>E-mail</label>
+        <input type="email" id="adminEmail" placeholder="willbrasila@gmail.com" autocomplete="username">
+      </div>
+      <div class="admin-field">
+        <label>Senha</label>
+        <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()">
+      </div>
+      <div class="admin-error" id="adminLoginError">E-mail ou senha incorretos. Tente novamente.</div>
+      <div class="admin-btn-row">
+        <button class="admin-btn admin-btn-secondary" onclick="closeAdminLogin()">Cancelar</button>
+        <button class="admin-btn admin-btn-primary" onclick="doAdminLogin()">🔑 Entrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL PAINEL ADMIN ── -->
+<div class="admin-overlay" id="adminPanelOverlay">
+  <div class="admin-modal admin-modal-wide">
+    <div class="admin-modal-hdr">
+      <div>
+        <h3>⚙️ Painel Administrativo <span class="admin-badge admin-badge-info" id="adminUserBadge"></span></h3>
+        <p>Configure os comunicados e links operacionais do manual</p>
+      </div>
+      <button class="admin-modal-close" onclick="closeAdminPanel()">✕</button>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('comunicados', this)">📢 Comunicados</button>
+      <button class="admin-tab" onclick="switchAdminTab('links', this)">🔗 Links Operacionais</button>
+      <button class="admin-tab" onclick="switchAdminTab('conta', this)">👤 Conta</button>
+    </div>
+
+    <!-- TAB: COMUNICADOS -->
+    <div class="admin-tab-content active" id="adminTab-comunicados">
+      <div class="admin-section-label">Comunicados publicados</div>
+      <div id="adminComList"></div>
+      <hr class="admin-divider">
+      <div class="admin-section-label">Adicionar comunicado</div>
+      <div class="admin-field">
+        <label>Título</label>
+        <input type="text" id="comTitle" placeholder="ex: Publicação da nova versão do manual — V21">
+      </div>
+      <div class="admin-field">
+        <label>Data</label>
+        <input type="text" id="comDate" placeholder="ex: Outubro 2026">
+      </div>
+      <div class="admin-field">
+        <label>URL (opcional — direciona ao clicar)</label>
+        <input type="url" id="comUrl" placeholder="https://...">
+      </div>
+      <div class="admin-btn-row">
+        <button class="admin-btn admin-btn-primary" onclick="addComunicado()">➕ Adicionar Comunicado</button>
+      </div>
+      <div class="admin-success" id="comSuccess">Comunicado adicionado com sucesso!</div>
+    </div>
+
+    <!-- TAB: LINKS -->
+    <div class="admin-tab-content" id="adminTab-links">
+      <div class="admin-section-label">Links operacionais publicados</div>
+      <div id="adminLinkList"></div>
+      <hr class="admin-divider">
+      <div class="admin-section-label">Adicionar link</div>
+      <div class="admin-field">
+        <label>Ícone (emoji)</label>
+        <input type="text" id="linkIcon" placeholder="ex: 🌐" maxlength="4" style="width:80px">
+      </div>
+      <div class="admin-field">
+        <label>Nome do link</label>
+        <input type="text" id="linkLabel" placeholder="ex: Sistema Frequência">
+      </div>
+      <div class="admin-field">
+        <label>URL</label>
+        <input type="url" id="linkUrl" placeholder="https://...">
+      </div>
+      <div class="admin-btn-row">
+        <button class="admin-btn admin-btn-primary" onclick="addLink()">➕ Adicionar Link</button>
+      </div>
+      <div class="admin-success" id="linkSuccess">Link adicionado com sucesso!</div>
+    </div>
+
+    <!-- TAB: CONTA -->
+    <div class="admin-tab-content" id="adminTab-conta">
+      <div class="admin-section-label">Sessão atual</div>
+      <div class="admin-list-item" style="margin-bottom:20px">
+        <span style="font-size:28px">👤</span>
+        <div class="admin-list-item-text">
+          <span class="admin-list-item-label" id="contaEmail"></span>
+          <span class="admin-list-item-url">Administrador DIOT</span>
+        </div>
+        <span class="admin-badge">ADMIN</span>
+      </div>
+      <hr class="admin-divider">
+      <div class="admin-section-label">Alterar senha</div>
+      <div class="admin-field">
+        <label>Senha atual</label>
+        <input type="password" id="passAtual" placeholder="••••••••">
+      </div>
+      <div class="admin-field">
+        <label>Nova senha</label>
+        <input type="password" id="passNova" placeholder="••••••••">
+      </div>
+      <div class="admin-field">
+        <label>Confirmar nova senha</label>
+        <input type="password" id="passConfirm" placeholder="••••••••">
+      </div>
+      <div class="admin-error" id="passError"></div>
+      <div class="admin-success" id="passSuccess">Senha alterada com sucesso!</div>
+      <div class="admin-btn-row">
+        <button class="admin-btn admin-btn-danger" onclick="doLogout()">🚪 Sair</button>
+        <button class="admin-btn admin-btn-primary" onclick="changePassword()">🔒 Alterar Senha</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  ADMIN SYSTEM
+// ═══════════════════════════════════════════
+
+const ADMIN_EMAIL    = 'willbrasila@gmail.com';
+const PASS_KEY       = 'diot_admin_pass';
+const COM_KEY        = 'diot_comunicados';
+const LINK_KEY       = 'diot_links';
+const SESSION_KEY    = 'diot_admin_session';
+const DEFAULT_PASS   = 'diot@2026';
+
+function getPass()  { return localStorage.getItem(PASS_KEY) || DEFAULT_PASS; }
+function getComs()  { try { return JSON.parse(localStorage.getItem(COM_KEY)) || []; } catch(e){ return []; } }
+function getLinks() { try { return JSON.parse(localStorage.getItem(LINK_KEY)) || []; } catch(e){ return []; } }
+function isLogged() { return sessionStorage.getItem(SESSION_KEY) === '1'; }
+
+// ── LOGIN ──
+function openAdminLogin() {
+  if (isLogged()) { openAdminPanel(); return; }
+  document.getElementById('adminEmail').value = '';
+  document.getElementById('adminPass').value  = '';
+  document.getElementById('adminLoginError').style.display = 'none';
+  document.getElementById('adminLoginOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('adminEmail').focus(), 100);
+}
+function closeAdminLogin() {
+  document.getElementById('adminLoginOverlay').classList.remove('open');
+}
+function doAdminLogin() {
+  const email = document.getElementById('adminEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('adminPass').value;
+  if (email === ADMIN_EMAIL && pass === getPass()) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    closeAdminLogin();
+    document.getElementById('adminTopBtn').classList.add('logged');
+    document.getElementById('adminTopBtn').textContent = '⚙ Admin ●';
+    openAdminPanel();
+  } else {
+    document.getElementById('adminLoginError').style.display = 'block';
+    document.getElementById('adminPass').value = '';
+    document.getElementById('adminPass').focus();
+  }
+}
+function doLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('adminTopBtn').classList.remove('logged');
+  document.getElementById('adminTopBtn').textContent = '⚙ Admin';
+  closeAdminPanel();
+}
+
+// ── PAINEL ──
+function openAdminPanel() {
+  if (!isLogged()) { openAdminLogin(); return; }
+  document.getElementById('adminUserBadge').textContent = ADMIN_EMAIL;
+  document.getElementById('contaEmail').textContent = ADMIN_EMAIL;
+  renderAdminComs();
+  renderAdminLinks();
+  switchAdminTab('comunicados', document.querySelector('.admin-tab'));
+  document.getElementById('adminPanelOverlay').classList.add('open');
+}
+function closeAdminPanel() {
+  document.getElementById('adminPanelOverlay').classList.remove('open');
+}
+function switchAdminTab(name, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('adminTab-' + name).classList.add('active');
+}
+
+// ── COMUNICADOS ──
+function renderAdminComs() {
+  const coms = getComs();
+  const el   = document.getElementById('adminComList');
+  if (!coms.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum comunicado cadastrado ainda.</p>'; return; }
+  el.innerHTML = coms.map((c, i) => `
+    <div class="admin-list-item">
+      <span style="font-size:22px">📋</span>
+      <div class="admin-list-item-text">
+        <span class="admin-list-item-label">${c.title}</span>
+        <span class="admin-list-item-url">${c.date}${c.url ? ' · ' + c.url : ''}</span>
+      </div>
+      <button class="admin-list-del" onclick="deleteCom(${i})">✕</button>
+    </div>`).join('');
+}
+function addComunicado() {
+  const title = document.getElementById('comTitle').value.trim();
+  const date  = document.getElementById('comDate').value.trim();
+  const url   = document.getElementById('comUrl').value.trim();
+  if (!title || !date) { alert('Preencha título e data.'); return; }
+  const coms = getComs();
+  coms.unshift({ title, date, url });
+  localStorage.setItem(COM_KEY, JSON.stringify(coms));
+  document.getElementById('comTitle').value = '';
+  document.getElementById('comDate').value  = '';
+  document.getElementById('comUrl').value   = '';
+  renderAdminComs();
+  renderDashboard();
+  const s = document.getElementById('comSuccess');
+  s.style.display = 'block';
+  setTimeout(() => s.style.display = 'none', 2500);
+}
+function deleteCom(i) {
+  const coms = getComs();
+  coms.splice(i, 1);
+  localStorage.setItem(COM_KEY, JSON.stringify(coms));
+  renderAdminComs();
+  renderDashboard();
+}
+
+// ── LINKS ──
+function renderAdminLinks() {
+  const links = getLinks();
+  const el    = document.getElementById('adminLinkList');
+  if (!links.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum link cadastrado ainda.</p>'; return; }
+  el.innerHTML = links.map((l, i) => `
+    <div class="admin-list-item">
+      <span style="font-size:22px">${l.icon || '🌐'}</span>
+      <div class="admin-list-item-text">
+        <span class="admin-list-item-label">${l.label}</span>
+        <span class="admin-list-item-url">${l.url}</span>
+      </div>
+      <button class="admin-list-del" onclick="deleteLink(${i})">✕</button>
+    </div>`).join('');
+}
+function addLink() {
+  const icon  = document.getElementById('linkIcon').value.trim() || '🌐';
+  const label = document.getElementById('linkLabel').value.trim();
+  const url   = document.getElementById('linkUrl').value.trim();
+  if (!label || !url) { alert('Preencha nome e URL.'); return; }
+  const links = getLinks();
+  links.push({ icon, label, url });
+  localStorage.setItem(LINK_KEY, JSON.stringify(links));
+  document.getElementById('linkIcon').value  = '';
+  document.getElementById('linkLabel').value = '';
+  document.getElementById('linkUrl').value   = '';
+  renderAdminLinks();
+  renderDashboard();
+  const s = document.getElementById('linkSuccess');
+  s.style.display = 'block';
+  setTimeout(() => s.style.display = 'none', 2500);
+}
+function deleteLink(i) {
+  const links = getLinks();
+  links.splice(i, 1);
+  localStorage.setItem(LINK_KEY, JSON.stringify(links));
+  renderAdminLinks();
+  renderDashboard();
+}
+
+// ── RENDER DASHBOARD ──
+function renderDashboard() {
+  const coms  = getComs();
+  const links = getLinks();
+  const hasContent = coms.length > 0 || links.length > 0;
+
+  document.getElementById('spHero').style.display      = hasContent ? '' : 'none';
+  document.getElementById('spDashboard').style.display = hasContent ? '' : 'none';
+
+  // Comunicados
+  const comList = document.querySelector('.sp-comunicados-list');
+  if (comList) {
+    if (coms.length === 0) {
+      comList.innerHTML = '<p style="padding:12px 4px;color:var(--muted);font-size:.85rem">Nenhum comunicado publicado.</p>';
+    } else {
+      comList.innerHTML = coms.map(c => `
+        <a class="sp-com-item" ${c.url ? `href="${c.url}" target="_blank"` : ''} style="${!c.url ? 'cursor:default' : ''}">
+          <div class="sp-com-thumb">📋</div>
+          <div>
+            <div class="sp-com-title">${c.title}</div>
+            <div class="sp-com-date">${c.date}</div>
+          </div>
+        </a>`).join('');
+    }
+  }
+
+  // Links
+  const linksList = document.querySelector('.sp-links-list');
+  if (linksList) {
+    if (links.length === 0) {
+      linksList.innerHTML = '<p style="padding:8px 4px;color:var(--muted);font-size:.85rem">Nenhum link cadastrado.</p>';
+    } else {
+      linksList.innerHTML = links.map(l => `
+        <a class="sp-link-btn" href="${l.url}" target="_blank" style="text-decoration:none">
+          <span class="sp-link-icon">${l.icon || '🌐'}</span> ${l.label}
+        </a>`).join('');
+    }
+  }
+}
+
+// ── ALTERAR SENHA ──
+function changePassword() {
+  const atual   = document.getElementById('passAtual').value;
+  const nova    = document.getElementById('passNova').value;
+  const confirm = document.getElementById('passConfirm').value;
+  const errEl   = document.getElementById('passError');
+  const okEl    = document.getElementById('passSuccess');
+  errEl.style.display = 'none';
+  okEl.style.display  = 'none';
+  if (atual !== getPass()) { errEl.textContent = 'Senha atual incorreta.'; errEl.style.display = 'block'; return; }
+  if (nova.length < 6)     { errEl.textContent = 'A nova senha deve ter ao menos 6 caracteres.'; errEl.style.display = 'block'; return; }
+  if (nova !== confirm)    { errEl.textContent = 'As senhas não coincidem.'; errEl.style.display = 'block'; return; }
+  localStorage.setItem(PASS_KEY, nova);
+  document.getElementById('passAtual').value   = '';
+  document.getElementById('passNova').value    = '';
+  document.getElementById('passConfirm').value = '';
+  okEl.style.display = 'block';
+  setTimeout(() => okEl.style.display = 'none', 2500);
+}
+
+// ── FECHAR OVERLAYS AO CLICAR FORA ──
+document.getElementById('adminLoginOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAdminLogin();
+});
+document.getElementById('adminPanelOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAdminPanel();
+});
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', function() {
+  renderDashboard();
+  if (isLogged()) {
+    document.getElementById('adminTopBtn').classList.add('logged');
+    document.getElementById('adminTopBtn').textContent = '⚙ Admin ●';
+  }
+});
+</script>
 
 </body>
 </html>
