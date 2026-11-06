@@ -3567,13 +3567,14 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     <div class="admin-modal-body">
       <div class="admin-field">
         <label>E-mail</label>
-        <input type="email" id="adminEmail" placeholder="willbrasila@gmail.com" autocomplete="username">
+        <input type="email" id="adminEmail" placeholder="seu-email@exemplo.com" autocomplete="username">
       </div>
       <div class="admin-field">
         <label>Senha</label>
         <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()">
       </div>
       <div class="admin-error" id="adminLoginError">E-mail ou senha incorretos. Tente novamente.</div>
+      <div style="margin-top:10px"><a href="#" onclick="resetAdminPassword();return false;" style="font-size:12px;color:var(--sp-purple)">Esqueci minha senha</a></div>
       <div class="admin-btn-row">
         <button class="admin-btn admin-btn-secondary" onclick="closeAdminLogin()">Cancelar</button>
         <button class="admin-btn admin-btn-primary" onclick="doAdminLogin()">🔑 Entrar</button>
@@ -3683,233 +3684,248 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
   </div>
 </div>
 
-<script>
+<script type="module">
 // ═══════════════════════════════════════════
-//  ADMIN SYSTEM
+//  FIREBASE · AUTH + FIRESTORE (painel admin)
 // ═══════════════════════════════════════════
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+         updatePassword, EmailAuthProvider, reauthenticateWithCredential,
+         sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, collection, doc, addDoc, deleteDoc, onSnapshot, query, orderBy }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-const ADMIN_EMAIL    = 'willbrasila@gmail.com';
-const PASS_KEY       = 'diot_admin_pass';
-const COM_KEY        = 'diot_comunicados';
-const LINK_KEY       = 'diot_links';
-const SESSION_KEY    = 'diot_admin_session';
-const DEFAULT_PASS   = 'diot@2026';
+const firebaseConfig = {
+  apiKey:            "AIzaSyB-TABtWNh4vlmAsd5ohGpkASQqsO_nQ6E",
+  authDomain:        "manualdiot.firebaseapp.com",
+  projectId:         "manualdiot",
+  storageBucket:     "manualdiot.firebasestorage.app",
+  messagingSenderId: "477054937500",
+  appId:             "1:477054937500:web:31980d1f17e3b53c7a0059",
+  measurementId:     "G-VPE42HWBD1"
+};
 
-function getPass()  { return localStorage.getItem(PASS_KEY) || DEFAULT_PASS; }
-function getComs()  { try { return JSON.parse(localStorage.getItem(COM_KEY)) || []; } catch(e){ return []; } }
-function getLinks() { try { return JSON.parse(localStorage.getItem(LINK_KEY)) || []; } catch(e){ return []; } }
-function isLogged() { return sessionStorage.getItem(SESSION_KEY) === '1'; }
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
 
-// ── LOGIN ──
-function openAdminLogin() {
-  if (isLogged()) { openAdminPanel(); return; }
-  document.getElementById('adminEmail').value = '';
-  document.getElementById('adminPass').value  = '';
-  document.getElementById('adminLoginError').style.display = 'none';
-  document.getElementById('adminLoginOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('adminEmail').focus(), 100);
+let currentUser = null;
+let cachedComs  = [];
+let cachedLinks = [];
+
+// ── helpers ──
+const $ = id => document.getElementById(id);
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function closeAdminLogin() {
-  document.getElementById('adminLoginOverlay').classList.remove('open');
+function safeUrl(u) {
+  try { const x = new URL(u); return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : ''; }
+  catch(e) { return ''; }
 }
-function doAdminLogin() {
-  const email = document.getElementById('adminEmail').value.trim().toLowerCase();
-  const pass  = document.getElementById('adminPass').value;
-  if (email === ADMIN_EMAIL && pass === getPass()) {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    closeAdminLogin();
-    document.getElementById('adminTopBtn').classList.add('logged');
-    document.getElementById('adminTopBtn').textContent = '⚙ Admin ●';
-    openAdminPanel();
-  } else {
-    document.getElementById('adminLoginError').style.display = 'block';
-    document.getElementById('adminPass').value = '';
-    document.getElementById('adminPass').focus();
+function showOk(id)  { const el = $(id); el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2500); }
+function showErr(id, msg) { const el = $(id); el.textContent = msg; el.style.display = 'block'; }
+function setAdminBtn(logged) {
+  const b = $('adminTopBtn');
+  b.classList.toggle('logged', logged);
+  b.textContent = logged ? '⚙ Admin ●' : '⚙ Admin';
+}
+function authMsg(code) {
+  switch (code) {
+    case 'auth/invalid-credential':
+    case 'auth/wrong-password':
+    case 'auth/user-not-found':       return 'E-mail ou senha incorretos.';
+    case 'auth/invalid-email':        return 'E-mail inválido.';
+    case 'auth/too-many-requests':    return 'Muitas tentativas. Aguarde alguns minutos ou redefina a senha.';
+    case 'auth/network-request-failed': return 'Falha de rede. Verifique sua conexão.';
+    case 'auth/unauthorized-domain':  return 'Domínio não autorizado no Firebase (Authentication › Configurações › Domínios autorizados).';
+    case 'auth/operation-not-allowed':return 'Login por e-mail/senha não está habilitado no Firebase (Authentication › Método de login).';
+    default:                          return 'Não foi possível entrar (' + code + ').';
   }
 }
-function doLogout() {
-  sessionStorage.removeItem(SESSION_KEY);
-  document.getElementById('adminTopBtn').classList.remove('logged');
-  document.getElementById('adminTopBtn').textContent = '⚙ Admin';
-  closeAdminPanel();
-}
 
-// ── PAINEL ──
+// ── Firestore: leitura pública em tempo real (todos os visitantes) ──
+onSnapshot(query(collection(db, 'comunicados'), orderBy('createdAt', 'desc')),
+  snap => { cachedComs = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminComs(); renderDashboard(); },
+  err  => console.warn('Firestore comunicados:', err.code));
+onSnapshot(query(collection(db, 'links'), orderBy('createdAt', 'asc')),
+  snap => { cachedLinks = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminLinks(); renderDashboard(); },
+  err  => console.warn('Firestore links:', err.code));
+
+// ── Auth ──
+onAuthStateChanged(auth, user => { currentUser = user; setAdminBtn(!!user); });
+
+window.openAdminLogin = function() {
+  if (currentUser) { openAdminPanel(); return; }
+  $('adminEmail').value = '';
+  $('adminPass').value  = '';
+  $('adminLoginError').style.display = 'none';
+  $('adminLoginOverlay').classList.add('open');
+  setTimeout(() => $('adminEmail').focus(), 100);
+};
+window.closeAdminLogin = () => $('adminLoginOverlay').classList.remove('open');
+
+window.doAdminLogin = async function() {
+  const email = $('adminEmail').value.trim();
+  const pass  = $('adminPass').value;
+  $('adminLoginError').style.display = 'none';
+  if (!email || !pass) { showErr('adminLoginError', 'Informe e-mail e senha.'); return; }
+  const btn = document.querySelector('#adminLoginOverlay .admin-btn-primary');
+  btn.disabled = true; btn.textContent = 'Entrando…';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    window.closeAdminLogin();
+    openAdminPanel();
+  } catch (e) {
+    showErr('adminLoginError', authMsg(e.code));
+    $('adminPass').value = '';
+    $('adminPass').focus();
+  } finally {
+    btn.disabled = false; btn.textContent = '🔑 Entrar';
+  }
+};
+
+window.resetAdminPassword = async function() {
+  const email = $('adminEmail').value.trim();
+  if (!email) { showErr('adminLoginError', 'Digite o e-mail acima para receber o link de redefinição.'); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert('Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha.');
+  } catch (e) { showErr('adminLoginError', authMsg(e.code)); }
+};
+
+window.doLogout = async function() { await signOut(auth); window.closeAdminPanel(); };
+
+// ── Painel ──
 function openAdminPanel() {
-  if (!isLogged()) { openAdminLogin(); return; }
-  document.getElementById('adminUserBadge').textContent = ADMIN_EMAIL;
-  document.getElementById('contaEmail').textContent = ADMIN_EMAIL;
-  renderAdminComs();
-  renderAdminLinks();
-  switchAdminTab('comunicados', document.querySelector('.admin-tab'));
-  document.getElementById('adminPanelOverlay').classList.add('open');
+  if (!currentUser) { window.openAdminLogin(); return; }
+  $('adminUserBadge').textContent = currentUser.email;
+  $('contaEmail').textContent     = currentUser.email;
+  renderAdminComs(); renderAdminLinks();
+  window.switchAdminTab('comunicados', document.querySelector('.admin-tab'));
+  $('adminPanelOverlay').classList.add('open');
 }
-function closeAdminPanel() {
-  document.getElementById('adminPanelOverlay').classList.remove('open');
-}
-function switchAdminTab(name, btn) {
+window.closeAdminPanel = () => $('adminPanelOverlay').classList.remove('open');
+window.switchAdminTab = function(name, btn) {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('adminTab-' + name).classList.add('active');
-}
+  $('adminTab-' + name).classList.add('active');
+};
 
-// ── COMUNICADOS ──
+// ── Comunicados ──
 function renderAdminComs() {
-  const coms = getComs();
-  const el   = document.getElementById('adminComList');
-  if (!coms.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum comunicado cadastrado ainda.</p>'; return; }
-  el.innerHTML = coms.map((c, i) => `
+  const el = $('adminComList');
+  if (!cachedComs.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum comunicado cadastrado ainda.</p>'; return; }
+  el.innerHTML = cachedComs.map(c => `
     <div class="admin-list-item">
       <span style="font-size:22px">📋</span>
       <div class="admin-list-item-text">
-        <span class="admin-list-item-label">${c.title}</span>
-        <span class="admin-list-item-url">${c.date}${c.url ? ' · ' + c.url : ''}</span>
+        <span class="admin-list-item-label">${esc(c.title)}</span>
+        <span class="admin-list-item-url">${esc(c.date)}${c.url ? ' · ' + esc(c.url) : ''}</span>
       </div>
-      <button class="admin-list-del" onclick="deleteCom(${i})">✕</button>
+      <button class="admin-list-del" onclick="deleteCom('${esc(c.id)}')">✕</button>
     </div>`).join('');
 }
-function addComunicado() {
-  const title = document.getElementById('comTitle').value.trim();
-  const date  = document.getElementById('comDate').value.trim();
-  const url   = document.getElementById('comUrl').value.trim();
+window.addComunicado = async function() {
+  if (!currentUser) return window.openAdminLogin();
+  const title = $('comTitle').value.trim();
+  const date  = $('comDate').value.trim();
+  const url   = $('comUrl').value.trim();
   if (!title || !date) { alert('Preencha título e data.'); return; }
-  const coms = getComs();
-  coms.unshift({ title, date, url });
-  localStorage.setItem(COM_KEY, JSON.stringify(coms));
-  document.getElementById('comTitle').value = '';
-  document.getElementById('comDate').value  = '';
-  document.getElementById('comUrl').value   = '';
-  renderAdminComs();
-  renderDashboard();
-  const s = document.getElementById('comSuccess');
-  s.style.display = 'block';
-  setTimeout(() => s.style.display = 'none', 2500);
-}
-function deleteCom(i) {
-  const coms = getComs();
-  coms.splice(i, 1);
-  localStorage.setItem(COM_KEY, JSON.stringify(coms));
-  renderAdminComs();
-  renderDashboard();
-}
+  if (url && !safeUrl(url)) { alert('URL inválida. Use http:// ou https://'); return; }
+  try {
+    await addDoc(collection(db, 'comunicados'), { title, date, url, createdAt: Date.now() });
+    $('comTitle').value = ''; $('comDate').value = ''; $('comUrl').value = '';
+    showOk('comSuccess');
+  } catch (e) { alert('Erro ao salvar (' + e.code + '). Verifique as regras do Firestore.'); }
+};
+window.deleteCom = async function(id) {
+  if (!currentUser || !confirm('Remover este comunicado?')) return;
+  try { await deleteDoc(doc(db, 'comunicados', id)); }
+  catch (e) { alert('Erro ao remover (' + e.code + ').'); }
+};
 
-// ── LINKS ──
+// ── Links ──
 function renderAdminLinks() {
-  const links = getLinks();
-  const el    = document.getElementById('adminLinkList');
-  if (!links.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum link cadastrado ainda.</p>'; return; }
-  el.innerHTML = links.map((l, i) => `
+  const el = $('adminLinkList');
+  if (!cachedLinks.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum link cadastrado ainda.</p>'; return; }
+  el.innerHTML = cachedLinks.map(l => `
     <div class="admin-list-item">
-      <span style="font-size:22px">${l.icon || '🌐'}</span>
+      <span style="font-size:22px">${esc(l.icon || '🌐')}</span>
       <div class="admin-list-item-text">
-        <span class="admin-list-item-label">${l.label}</span>
-        <span class="admin-list-item-url">${l.url}</span>
+        <span class="admin-list-item-label">${esc(l.label)}</span>
+        <span class="admin-list-item-url">${esc(l.url)}</span>
       </div>
-      <button class="admin-list-del" onclick="deleteLink(${i})">✕</button>
+      <button class="admin-list-del" onclick="deleteLink('${esc(l.id)}')">✕</button>
     </div>`).join('');
 }
-function addLink() {
-  const icon  = document.getElementById('linkIcon').value.trim() || '🌐';
-  const label = document.getElementById('linkLabel').value.trim();
-  const url   = document.getElementById('linkUrl').value.trim();
+window.addLink = async function() {
+  if (!currentUser) return window.openAdminLogin();
+  const icon  = $('linkIcon').value.trim() || '🌐';
+  const label = $('linkLabel').value.trim();
+  const url   = $('linkUrl').value.trim();
   if (!label || !url) { alert('Preencha nome e URL.'); return; }
-  const links = getLinks();
-  links.push({ icon, label, url });
-  localStorage.setItem(LINK_KEY, JSON.stringify(links));
-  document.getElementById('linkIcon').value  = '';
-  document.getElementById('linkLabel').value = '';
-  document.getElementById('linkUrl').value   = '';
-  renderAdminLinks();
-  renderDashboard();
-  const s = document.getElementById('linkSuccess');
-  s.style.display = 'block';
-  setTimeout(() => s.style.display = 'none', 2500);
-}
-function deleteLink(i) {
-  const links = getLinks();
-  links.splice(i, 1);
-  localStorage.setItem(LINK_KEY, JSON.stringify(links));
-  renderAdminLinks();
-  renderDashboard();
-}
+  if (!safeUrl(url))  { alert('URL inválida. Use http:// ou https://'); return; }
+  try {
+    await addDoc(collection(db, 'links'), { icon, label, url, createdAt: Date.now() });
+    $('linkIcon').value = ''; $('linkLabel').value = ''; $('linkUrl').value = '';
+    showOk('linkSuccess');
+  } catch (e) { alert('Erro ao salvar (' + e.code + '). Verifique as regras do Firestore.'); }
+};
+window.deleteLink = async function(id) {
+  if (!currentUser || !confirm('Remover este link?')) return;
+  try { await deleteDoc(doc(db, 'links', id)); }
+  catch (e) { alert('Erro ao remover (' + e.code + ').'); }
+};
 
-// ── RENDER DASHBOARD ──
+// ── Dashboard público (aparece só se houver conteúdo) ──
 function renderDashboard() {
-  const coms  = getComs();
-  const links = getLinks();
-  const hasContent = coms.length > 0 || links.length > 0;
+  const has = cachedComs.length > 0 || cachedLinks.length > 0;
+  $('spHero').style.display      = has ? '' : 'none';
+  $('spDashboard').style.display = has ? '' : 'none';
 
-  document.getElementById('spHero').style.display      = hasContent ? '' : 'none';
-  document.getElementById('spDashboard').style.display = hasContent ? '' : 'none';
-
-  // Comunicados
   const comList = document.querySelector('.sp-comunicados-list');
   if (comList) {
-    if (coms.length === 0) {
-      comList.innerHTML = '<p style="padding:12px 4px;color:var(--muted);font-size:.85rem">Nenhum comunicado publicado.</p>';
-    } else {
-      comList.innerHTML = coms.map(c => `
-        <a class="sp-com-item" ${c.url ? `href="${c.url}" target="_blank"` : ''} style="${!c.url ? 'cursor:default' : ''}">
-          <div class="sp-com-thumb">📋</div>
-          <div>
-            <div class="sp-com-title">${c.title}</div>
-            <div class="sp-com-date">${c.date}</div>
-          </div>
-        </a>`).join('');
-    }
+    comList.innerHTML = cachedComs.length ? cachedComs.map(c => {
+      const u = safeUrl(c.url);
+      return `<a class="sp-com-item" ${u ? `href="${esc(u)}" target="_blank" rel="noopener"` : 'style="cursor:default"'}>
+        <div class="sp-com-thumb">📋</div>
+        <div><div class="sp-com-title">${esc(c.title)}</div><div class="sp-com-date">${esc(c.date)}</div></div>
+      </a>`;
+    }).join('') : '<p style="padding:12px 4px;color:var(--muted);font-size:.85rem">Nenhum comunicado publicado.</p>';
   }
-
-  // Links
   const linksList = document.querySelector('.sp-links-list');
   if (linksList) {
-    if (links.length === 0) {
-      linksList.innerHTML = '<p style="padding:8px 4px;color:var(--muted);font-size:.85rem">Nenhum link cadastrado.</p>';
-    } else {
-      linksList.innerHTML = links.map(l => `
-        <a class="sp-link-btn" href="${l.url}" target="_blank" style="text-decoration:none">
-          <span class="sp-link-icon">${l.icon || '🌐'}</span> ${l.label}
-        </a>`).join('');
-    }
+    linksList.innerHTML = cachedLinks.length ? cachedLinks.map(l =>
+      `<a class="sp-link-btn" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" style="text-decoration:none">
+         <span class="sp-link-icon">${esc(l.icon || '🌐')}</span> ${esc(l.label)}
+       </a>`).join('')
+      : '<p style="padding:8px 4px;color:var(--muted);font-size:.85rem">Nenhum link cadastrado.</p>';
   }
 }
 
-// ── ALTERAR SENHA ──
-function changePassword() {
-  const atual   = document.getElementById('passAtual').value;
-  const nova    = document.getElementById('passNova').value;
-  const confirm = document.getElementById('passConfirm').value;
-  const errEl   = document.getElementById('passError');
-  const okEl    = document.getElementById('passSuccess');
-  errEl.style.display = 'none';
-  okEl.style.display  = 'none';
-  if (atual !== getPass()) { errEl.textContent = 'Senha atual incorreta.'; errEl.style.display = 'block'; return; }
-  if (nova.length < 6)     { errEl.textContent = 'A nova senha deve ter ao menos 6 caracteres.'; errEl.style.display = 'block'; return; }
-  if (nova !== confirm)    { errEl.textContent = 'As senhas não coincidem.'; errEl.style.display = 'block'; return; }
-  localStorage.setItem(PASS_KEY, nova);
-  document.getElementById('passAtual').value   = '';
-  document.getElementById('passNova').value    = '';
-  document.getElementById('passConfirm').value = '';
-  okEl.style.display = 'block';
-  setTimeout(() => okEl.style.display = 'none', 2500);
-}
-
-// ── FECHAR OVERLAYS AO CLICAR FORA ──
-document.getElementById('adminLoginOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeAdminLogin();
-});
-document.getElementById('adminPanelOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeAdminPanel();
-});
-
-// ── INIT ──
-document.addEventListener('DOMContentLoaded', function() {
-  renderDashboard();
-  if (isLogged()) {
-    document.getElementById('adminTopBtn').classList.add('logged');
-    document.getElementById('adminTopBtn').textContent = '⚙ Admin ●';
+// ── Alterar senha (Firebase Auth) ──
+window.changePassword = async function() {
+  const atual = $('passAtual').value, nova = $('passNova').value, conf = $('passConfirm').value;
+  $('passError').style.display = 'none'; $('passSuccess').style.display = 'none';
+  if (!currentUser)      { showErr('passError', 'Sessão expirada. Entre novamente.'); return; }
+  if (nova.length < 6)   { showErr('passError', 'A nova senha deve ter ao menos 6 caracteres.'); return; }
+  if (nova !== conf)     { showErr('passError', 'As senhas não coincidem.'); return; }
+  try {
+    const cred = EmailAuthProvider.credential(currentUser.email, atual);
+    await reauthenticateWithCredential(currentUser, cred);
+    await updatePassword(currentUser, nova);
+    $('passAtual').value = $('passNova').value = $('passConfirm').value = '';
+    showOk('passSuccess');
+  } catch (e) {
+    showErr('passError', (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
+      ? 'Senha atual incorreta.' : 'Não foi possível alterar (' + e.code + ').');
   }
-});
+};
+
+// ── Fechar overlays ao clicar fora ──
+$('adminLoginOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) window.closeAdminLogin(); });
+$('adminPanelOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) window.closeAdminPanel(); });
 </script>
 
 </body>
