@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<link rel="icon" href="data:,">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manual de Execução de Jobs — DIOT · Dataprev</title>
@@ -1242,6 +1243,26 @@
   .faq-tag-ev { background: #fffbeb; color: #a16207; border: 1px solid #fcd34d; }
   .faq-tag-geral { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 
+  /* ── ADMIN · TIPOS DE EXECUÇÃO ── */
+  .admin-tabs { overflow-x: auto; }
+  .admin-tab { white-space: nowrap; }
+  .admin-field textarea, .tp-phase textarea, .tp-phase input {
+    width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 4px;
+    font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--text); background: #fff;
+    outline: none; box-sizing: border-box; resize: vertical; margin-bottom: 8px;
+  }
+  .admin-field textarea:focus, .tp-phase textarea:focus, .tp-phase input:focus { border-color: var(--sp-purple); box-shadow: 0 0 0 3px rgba(78,74,158,.1); }
+  .tp-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+  .tp-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+  .tp-btn { background: #fff; border: 1px solid var(--border); color: var(--sp-purple); border-radius: 4px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .tp-btn:hover { background: var(--sp-purple-light); border-color: var(--sp-purple); }
+  .tp-chip { font-family: 'DM Mono', monospace; font-size: 10px; padding: 1px 7px; border-radius: 4px; border: 1px solid; font-weight: 600; }
+  .tp-ativo  { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+  .tp-breve  { background: #fffbeb; color: #a16207; border-color: #fcd34d; }
+  .tp-oculto { background: #f1f5f9; color: #64748b; border-color: #cbd5e1; }
+  .tp-phase { border: 1px solid var(--border); border-left: 3px solid var(--sp-purple); border-radius: 6px; padding: 12px; margin-bottom: 10px; background: #fafafa; }
+  .tp-phase-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: .85rem; color: var(--sp-purple-dark); }
+  .tp-hint { background: #eff6ff; border: 1px solid #93c5fd; border-left: 4px solid #3b82f6; color: #1e40af; border-radius: 4px; padding: 10px 14px; font-size: .82rem; margin-bottom: 14px; }
 </style>
 </head>
 <body>
@@ -3293,7 +3314,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
 
 <footer>
   <div class="footer-brand"><strong>DIOT</strong> · Dataprev &mdash; Manual Interno de Operações</div>
-  <div class="footer-ver">v2.0 · maio 2025</div>
+  <div class="footer-ver">v20.3</div>
 </footer>
 
 <script>
@@ -3597,6 +3618,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchAdminTab('comunicados', this)">📢 Comunicados</button>
       <button class="admin-tab" onclick="switchAdminTab('links', this)">🔗 Links Operacionais</button>
+      <button class="admin-tab" onclick="switchAdminTab('tipos', this)">🧩 Tipos de Execução</button>
       <button class="admin-tab" onclick="switchAdminTab('conta', this)">👤 Conta</button>
     </div>
 
@@ -3648,6 +3670,40 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
       <div class="admin-success" id="linkSuccess">Link adicionado com sucesso!</div>
     </div>
 
+    <!-- TAB: TIPOS DE EXECUÇÃO -->
+    <div class="admin-tab-content" id="adminTab-tipos">
+      <div id="tiposListView">
+        <div class="admin-section-label">Tipos de execução (menu do manual)</div>
+        <div class="tp-hint">Use <strong>Ativar/Desativar</strong> para alternar entre <em>Disponível</em> e <em>Em breve</em>. Em <strong>Editar</strong> também dá para ocultar o tipo do menu, trocar nome/ícone/cor e escrever as fases do procedimento.</div>
+        <div id="adminTiposList"></div>
+        <div class="admin-btn-row"><button class="admin-btn admin-btn-primary" onclick="tipoNew()">➕ Novo tipo de execução</button></div>
+        <div class="admin-success" id="tpSuccess">Tipo salvo com sucesso!</div>
+      </div>
+      <div id="tiposEditView" style="display:none">
+        <div class="admin-section-label" id="tpTitleLbl">Novo tipo de execução</div>
+        <div class="tp-hint" id="tpBuiltinHint" style="display:none">Este é um tipo original do manual. O conteúdo atual é mantido; se você preencher fases abaixo, elas <strong>substituem</strong> o conteúdo. Use <em>Restaurar</em> na lista para voltar ao original.</div>
+        <div class="admin-field"><label>Nome *</label><input type="text" id="tpNome" placeholder="ex: Cancelar Application"></div>
+        <div class="tp-row">
+          <div class="admin-field"><label>Nº</label><input type="text" id="tpNum" placeholder="18"></div>
+          <div class="admin-field"><label>Ícone (emoji)</label><input type="text" id="tpIcon" maxlength="4" placeholder="📄"></div>
+          <div class="admin-field"><label>Cor</label>
+            <select id="tpCor"><option value="">Padrão</option><option value="azul">Azul</option><option value="ambar">Âmbar</option><option value="verde">Verde</option><option value="roxo">Roxo</option><option value="vermelho">Vermelho</option><option value="rosa">Rosa</option></select></div>
+          <div class="admin-field"><label>Status</label>
+            <select id="tpStatus"><option value="ativo">Disponível</option><option value="breve">Em breve (desativado)</option><option value="oculto">Oculto do menu</option></select></div>
+        </div>
+        <div class="admin-field"><label>Subtítulo (opcional, aparece no card)</label><input type="text" id="tpSub" placeholder="ex: Workload · Monitor"></div>
+        <div class="admin-field"><label>Introdução / aviso (opcional)</label><textarea id="tpIntro" rows="2" placeholder="Texto de destaque no topo do procedimento"></textarea></div>
+        <div class="admin-section-label">Fases do procedimento</div>
+        <div id="tpPhases"></div>
+        <div class="admin-btn-row" style="justify-content:flex-start;margin-bottom:12px"><button class="admin-btn admin-btn-secondary" onclick="tpAddPhase()">➕ Adicionar fase</button></div>
+        <div class="tp-hint">Em cada fase, escreva <strong>um passo por linha</strong>. Para destacar comandos ou campos, coloque entre crases: <code>`Submit application on hold`</code>.</div>
+        <div class="admin-btn-row">
+          <button class="admin-btn admin-btn-secondary" onclick="tipoBack()">← Voltar</button>
+          <button class="admin-btn admin-btn-primary" onclick="tipoSave()">💾 Salvar tipo</button>
+        </div>
+      </div>
+    </div>
+
     <!-- TAB: CONTA -->
     <div class="admin-tab-content" id="adminTab-conta">
       <div class="admin-section-label">Sessão atual</div>
@@ -3684,248 +3740,558 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
   </div>
 </div>
 
-<script type="module">
-// ═══════════════════════════════════════════
-//  FIREBASE · AUTH + FIRESTORE (painel admin)
-// ═══════════════════════════════════════════
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
-         updatePassword, EmailAuthProvider, reauthenticateWithCredential,
-         sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, collection, doc, addDoc, deleteDoc, onSnapshot, query, orderBy }
-  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+<script>
+// ═══════════════════════════════════════════════════════════
+//  PAINEL ADMIN · Firebase Auth + Firestore
+//  As funções abaixo existem SEMPRE (script comum). O Firebase é
+//  carregado por import() com tratamento de falha, então um bloqueio
+//  de rede/extensão gera uma mensagem clara em vez de "not defined".
+// ═══════════════════════════════════════════════════════════
+(function () {
+  const APP_VERSION = 'v20.3';
+  const FB_BASE = 'https://www.gstatic.com/firebasejs/10.12.2/';
+  const firebaseConfig = {
+    apiKey:            "AIzaSyB-TABtWNh4vlmAsd5ohGpkASQqsO_nQ6E",
+    authDomain:        "manualdiot.firebaseapp.com",
+    projectId:         "manualdiot",
+    storageBucket:     "manualdiot.firebasestorage.app",
+    messagingSenderId: "477054937500",
+    appId:             "1:477054937500:web:31980d1f17e3b53c7a0059",
+    measurementId:     "G-VPE42HWBD1"
+  };
 
-const firebaseConfig = {
-  apiKey:            "AIzaSyB-TABtWNh4vlmAsd5ohGpkASQqsO_nQ6E",
-  authDomain:        "manualdiot.firebaseapp.com",
-  projectId:         "manualdiot",
-  storageBucket:     "manualdiot.firebasestorage.app",
-  messagingSenderId: "477054937500",
-  appId:             "1:477054937500:web:31980d1f17e3b53c7a0059",
-  measurementId:     "G-VPE42HWBD1"
-};
+  let fb = null;              // { auth, db, A (auth sdk), F (firestore sdk) }
+  let currentUser = null;
+  let cachedComs = [], cachedLinks = [];
+  let fbError = '';
 
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
-let currentUser = null;
-let cachedComs  = [];
-let cachedLinks = [];
-
-// ── helpers ──
-const $ = id => document.getElementById(id);
-function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function safeUrl(u) {
-  try { const x = new URL(u); return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : ''; }
-  catch(e) { return ''; }
-}
-function showOk(id)  { const el = $(id); el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2500); }
-function showErr(id, msg) { const el = $(id); el.textContent = msg; el.style.display = 'block'; }
-function setAdminBtn(logged) {
-  const b = $('adminTopBtn');
-  b.classList.toggle('logged', logged);
-  b.textContent = logged ? '⚙ Admin ●' : '⚙ Admin';
-}
-function authMsg(code) {
-  switch (code) {
-    case 'auth/invalid-credential':
-    case 'auth/wrong-password':
-    case 'auth/user-not-found':       return 'E-mail ou senha incorretos.';
-    case 'auth/invalid-email':        return 'E-mail inválido.';
-    case 'auth/too-many-requests':    return 'Muitas tentativas. Aguarde alguns minutos ou redefina a senha.';
-    case 'auth/network-request-failed': return 'Falha de rede. Verifique sua conexão.';
-    case 'auth/unauthorized-domain':  return 'Domínio não autorizado no Firebase (Authentication › Configurações › Domínios autorizados).';
-    case 'auth/operation-not-allowed':return 'Login por e-mail/senha não está habilitado no Firebase (Authentication › Método de login).';
-    default:                          return 'Não foi possível entrar (' + code + ').';
+  // ── helpers ──
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function safeUrl(u) {
+    try { const x = new URL(u); return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : ''; }
+    catch (e) { return ''; }
   }
-}
-
-// ── Firestore: leitura pública em tempo real (todos os visitantes) ──
-onSnapshot(query(collection(db, 'comunicados'), orderBy('createdAt', 'desc')),
-  snap => { cachedComs = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminComs(); renderDashboard(); },
-  err  => console.warn('Firestore comunicados:', err.code));
-onSnapshot(query(collection(db, 'links'), orderBy('createdAt', 'asc')),
-  snap => { cachedLinks = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminLinks(); renderDashboard(); },
-  err  => console.warn('Firestore links:', err.code));
-
-// ── Auth ──
-onAuthStateChanged(auth, user => { currentUser = user; setAdminBtn(!!user); });
-
-window.openAdminLogin = function() {
-  if (currentUser) { openAdminPanel(); return; }
-  $('adminEmail').value = '';
-  $('adminPass').value  = '';
-  $('adminLoginError').style.display = 'none';
-  $('adminLoginOverlay').classList.add('open');
-  setTimeout(() => $('adminEmail').focus(), 100);
-};
-window.closeAdminLogin = () => $('adminLoginOverlay').classList.remove('open');
-
-window.doAdminLogin = async function() {
-  const email = $('adminEmail').value.trim();
-  const pass  = $('adminPass').value;
-  $('adminLoginError').style.display = 'none';
-  if (!email || !pass) { showErr('adminLoginError', 'Informe e-mail e senha.'); return; }
-  const btn = document.querySelector('#adminLoginOverlay .admin-btn-primary');
-  btn.disabled = true; btn.textContent = 'Entrando…';
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-    window.closeAdminLogin();
-    openAdminPanel();
-  } catch (e) {
-    showErr('adminLoginError', authMsg(e.code));
-    $('adminPass').value = '';
-    $('adminPass').focus();
-  } finally {
-    btn.disabled = false; btn.textContent = '🔑 Entrar';
+  function showOk(id)  { const el = $(id); el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2500); }
+  function showErr(id, msg) { const el = $(id); el.textContent = msg; el.style.display = 'block'; }
+  function setAdminBtn(logged) {
+    const b = $('adminTopBtn');
+    b.classList.toggle('logged', logged);
+    b.textContent = logged ? '⚙ Admin ●' : '⚙ Admin';
   }
-};
-
-window.resetAdminPassword = async function() {
-  const email = $('adminEmail').value.trim();
-  if (!email) { showErr('adminLoginError', 'Digite o e-mail acima para receber o link de redefinição.'); return; }
-  try {
-    await sendPasswordResetEmail(auth, email);
-    alert('Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha.');
-  } catch (e) { showErr('adminLoginError', authMsg(e.code)); }
-};
-
-window.doLogout = async function() { await signOut(auth); window.closeAdminPanel(); };
-
-// ── Painel ──
-function openAdminPanel() {
-  if (!currentUser) { window.openAdminLogin(); return; }
-  $('adminUserBadge').textContent = currentUser.email;
-  $('contaEmail').textContent     = currentUser.email;
-  renderAdminComs(); renderAdminLinks();
-  window.switchAdminTab('comunicados', document.querySelector('.admin-tab'));
-  $('adminPanelOverlay').classList.add('open');
-}
-window.closeAdminPanel = () => $('adminPanelOverlay').classList.remove('open');
-window.switchAdminTab = function(name, btn) {
-  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  $('adminTab-' + name).classList.add('active');
-};
-
-// ── Comunicados ──
-function renderAdminComs() {
-  const el = $('adminComList');
-  if (!cachedComs.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum comunicado cadastrado ainda.</p>'; return; }
-  el.innerHTML = cachedComs.map(c => `
-    <div class="admin-list-item">
-      <span style="font-size:22px">📋</span>
-      <div class="admin-list-item-text">
-        <span class="admin-list-item-label">${esc(c.title)}</span>
-        <span class="admin-list-item-url">${esc(c.date)}${c.url ? ' · ' + esc(c.url) : ''}</span>
-      </div>
-      <button class="admin-list-del" onclick="deleteCom('${esc(c.id)}')">✕</button>
-    </div>`).join('');
-}
-window.addComunicado = async function() {
-  if (!currentUser) return window.openAdminLogin();
-  const title = $('comTitle').value.trim();
-  const date  = $('comDate').value.trim();
-  const url   = $('comUrl').value.trim();
-  if (!title || !date) { alert('Preencha título e data.'); return; }
-  if (url && !safeUrl(url)) { alert('URL inválida. Use http:// ou https://'); return; }
-  try {
-    await addDoc(collection(db, 'comunicados'), { title, date, url, createdAt: Date.now() });
-    $('comTitle').value = ''; $('comDate').value = ''; $('comUrl').value = '';
-    showOk('comSuccess');
-  } catch (e) { alert('Erro ao salvar (' + e.code + '). Verifique as regras do Firestore.'); }
-};
-window.deleteCom = async function(id) {
-  if (!currentUser || !confirm('Remover este comunicado?')) return;
-  try { await deleteDoc(doc(db, 'comunicados', id)); }
-  catch (e) { alert('Erro ao remover (' + e.code + ').'); }
-};
-
-// ── Links ──
-function renderAdminLinks() {
-  const el = $('adminLinkList');
-  if (!cachedLinks.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum link cadastrado ainda.</p>'; return; }
-  el.innerHTML = cachedLinks.map(l => `
-    <div class="admin-list-item">
-      <span style="font-size:22px">${esc(l.icon || '🌐')}</span>
-      <div class="admin-list-item-text">
-        <span class="admin-list-item-label">${esc(l.label)}</span>
-        <span class="admin-list-item-url">${esc(l.url)}</span>
-      </div>
-      <button class="admin-list-del" onclick="deleteLink('${esc(l.id)}')">✕</button>
-    </div>`).join('');
-}
-window.addLink = async function() {
-  if (!currentUser) return window.openAdminLogin();
-  const icon  = $('linkIcon').value.trim() || '🌐';
-  const label = $('linkLabel').value.trim();
-  const url   = $('linkUrl').value.trim();
-  if (!label || !url) { alert('Preencha nome e URL.'); return; }
-  if (!safeUrl(url))  { alert('URL inválida. Use http:// ou https://'); return; }
-  try {
-    await addDoc(collection(db, 'links'), { icon, label, url, createdAt: Date.now() });
-    $('linkIcon').value = ''; $('linkLabel').value = ''; $('linkUrl').value = '';
-    showOk('linkSuccess');
-  } catch (e) { alert('Erro ao salvar (' + e.code + '). Verifique as regras do Firestore.'); }
-};
-window.deleteLink = async function(id) {
-  if (!currentUser || !confirm('Remover este link?')) return;
-  try { await deleteDoc(doc(db, 'links', id)); }
-  catch (e) { alert('Erro ao remover (' + e.code + ').'); }
-};
-
-// ── Dashboard público (aparece só se houver conteúdo) ──
-function renderDashboard() {
-  const has = cachedComs.length > 0 || cachedLinks.length > 0;
-  $('spHero').style.display      = has ? '' : 'none';
-  $('spDashboard').style.display = has ? '' : 'none';
-
-  const comList = document.querySelector('.sp-comunicados-list');
-  if (comList) {
-    comList.innerHTML = cachedComs.length ? cachedComs.map(c => {
-      const u = safeUrl(c.url);
-      return `<a class="sp-com-item" ${u ? `href="${esc(u)}" target="_blank" rel="noopener"` : 'style="cursor:default"'}>
-        <div class="sp-com-thumb">📋</div>
-        <div><div class="sp-com-title">${esc(c.title)}</div><div class="sp-com-date">${esc(c.date)}</div></div>
-      </a>`;
-    }).join('') : '<p style="padding:12px 4px;color:var(--muted);font-size:.85rem">Nenhum comunicado publicado.</p>';
+  function authMsg(code) {
+    switch (code) {
+      case 'auth/invalid-credential':
+      case 'auth/wrong-password':
+      case 'auth/user-not-found':        return 'E-mail ou senha incorretos.';
+      case 'auth/invalid-email':         return 'E-mail inválido.';
+      case 'auth/too-many-requests':     return 'Muitas tentativas. Aguarde alguns minutos ou use "Esqueci minha senha".';
+      case 'auth/network-request-failed':return 'Falha de rede ao falar com o Firebase. Verifique sua conexão.';
+      case 'auth/unauthorized-domain':   return 'Domínio não autorizado no Firebase (Authentication › Configurações › Domínios autorizados).';
+      case 'auth/operation-not-allowed': return 'Login por e-mail/senha não está habilitado no Firebase.';
+      default:                           return 'Não foi possível entrar (' + code + ').';
+    }
   }
-  const linksList = document.querySelector('.sp-links-list');
-  if (linksList) {
-    linksList.innerHTML = cachedLinks.length ? cachedLinks.map(l =>
-      `<a class="sp-link-btn" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" style="text-decoration:none">
-         <span class="sp-link-icon">${esc(l.icon || '🌐')}</span> ${esc(l.label)}
-       </a>`).join('')
-      : '<p style="padding:8px 4px;color:var(--muted);font-size:.85rem">Nenhum link cadastrado.</p>';
-  }
-}
 
-// ── Alterar senha (Firebase Auth) ──
-window.changePassword = async function() {
-  const atual = $('passAtual').value, nova = $('passNova').value, conf = $('passConfirm').value;
-  $('passError').style.display = 'none'; $('passSuccess').style.display = 'none';
-  if (!currentUser)      { showErr('passError', 'Sessão expirada. Entre novamente.'); return; }
-  if (nova.length < 6)   { showErr('passError', 'A nova senha deve ter ao menos 6 caracteres.'); return; }
-  if (nova !== conf)     { showErr('passError', 'As senhas não coincidem.'); return; }
-  try {
-    const cred = EmailAuthProvider.credential(currentUser.email, atual);
-    await reauthenticateWithCredential(currentUser, cred);
-    await updatePassword(currentUser, nova);
-    $('passAtual').value = $('passNova').value = $('passConfirm').value = '';
-    showOk('passSuccess');
-  } catch (e) {
-    showErr('passError', (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
-      ? 'Senha atual incorreta.' : 'Não foi possível alterar (' + e.code + ').');
-  }
-};
+  // ── carrega o SDK do Firebase (com falha tratada) ──
+  const fbReady = (async () => {
+    try {
+      const [appM, authM, fsM] = await Promise.all([
+        import(FB_BASE + 'firebase-app.js'),
+        import(FB_BASE + 'firebase-auth.js'),
+        import(FB_BASE + 'firebase-firestore.js')
+      ]);
+      const app = appM.initializeApp(firebaseConfig);
+      fb = { auth: authM.getAuth(app), db: fsM.getFirestore(app), A: authM, F: fsM };
 
-// ── Fechar overlays ao clicar fora ──
-$('adminLoginOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) window.closeAdminLogin(); });
-$('adminPanelOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) window.closeAdminPanel(); });
+      fb.A.onAuthStateChanged(fb.auth, user => { currentUser = user; setAdminBtn(!!user); });
+
+      // leitura pública em tempo real — todo visitante vê os comunicados/links
+      fb.F.onSnapshot(fb.F.query(fb.F.collection(fb.db, 'comunicados'), fb.F.orderBy('createdAt', 'desc')),
+        snap => { cachedComs = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminComs(); renderDashboard(); },
+        err  => console.warn('[DIOT] Firestore comunicados:', err.code));
+      fb.F.onSnapshot(fb.F.query(fb.F.collection(fb.db, 'links'), fb.F.orderBy('createdAt', 'asc')),
+        snap => { cachedLinks = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminLinks(); renderDashboard(); },
+        err  => console.warn('[DIOT] Firestore links:', err.code));
+      fb.F.onSnapshot(fb.F.collection(fb.db, 'tipos'),
+        snap => { tipoDocs = {}; snap.docs.forEach(d => { tipoDocs[d.id] = d.data(); }); renderAdminTipos(); applyTypes(); },
+        err  => console.warn('[DIOT] Firestore tipos:', err.code));
+      console.info('[DIOT] Manual ' + APP_VERSION + ' · Firebase carregado');
+      return true;
+    } catch (e) {
+      fbError = (e && (e.code || e.message)) || String(e);
+      console.error('[DIOT] Falha ao carregar o Firebase:', e);
+      return false;
+    }
+  })();
+  const FB_FAIL_MSG = () => 'Não foi possível carregar o Firebase (' + fbError + '). Verifique a conexão ou se algum bloqueador/extensão está barrando gstatic.com e recarregue com Ctrl+F5.';
+
+  // ── Login ──
+  window.openAdminLogin = function () {
+    if (currentUser) { openAdminPanel(); return; }
+    $('adminEmail').value = '';
+    $('adminPass').value  = '';
+    $('adminLoginError').style.display = 'none';
+    $('adminLoginOverlay').classList.add('open');
+    setTimeout(() => $('adminEmail').focus(), 100);
+  };
+  window.closeAdminLogin = () => $('adminLoginOverlay').classList.remove('open');
+
+  window.doAdminLogin = async function () {
+    const email = $('adminEmail').value.trim();
+    const pass  = $('adminPass').value;
+    $('adminLoginError').style.display = 'none';
+    if (!email || !pass) { showErr('adminLoginError', 'Informe e-mail e senha.'); return; }
+    const btn = document.querySelector('#adminLoginOverlay .admin-btn-primary');
+    btn.disabled = true; btn.textContent = 'Entrando…';
+    try {
+      if (!(await fbReady)) { showErr('adminLoginError', FB_FAIL_MSG()); return; }
+      await fb.A.signInWithEmailAndPassword(fb.auth, email, pass);
+      window.closeAdminLogin();
+      openAdminPanel();
+    } catch (e) {
+      showErr('adminLoginError', authMsg(e.code));
+      $('adminPass').value = '';
+      $('adminPass').focus();
+    } finally {
+      btn.disabled = false; btn.textContent = '🔑 Entrar';
+    }
+  };
+
+  window.resetAdminPassword = async function () {
+    const email = $('adminEmail').value.trim();
+    if (!email) { showErr('adminLoginError', 'Digite o e-mail acima para receber o link de redefinição.'); return; }
+    if (!(await fbReady)) { showErr('adminLoginError', FB_FAIL_MSG()); return; }
+    try {
+      await fb.A.sendPasswordResetEmail(fb.auth, email);
+      alert('Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha.');
+    } catch (e) { showErr('adminLoginError', authMsg(e.code)); }
+  };
+
+  window.doLogout = async function () {
+    if (fb) await fb.A.signOut(fb.auth);
+    window.closeAdminPanel();
+  };
+
+  // ── Painel ──
+  function openAdminPanel() {
+    if (!currentUser) { window.openAdminLogin(); return; }
+    $('adminUserBadge').textContent = currentUser.email;
+    $('contaEmail').textContent     = currentUser.email;
+    renderAdminComs(); renderAdminLinks(); renderAdminTipos();
+    window.switchAdminTab('comunicados', document.querySelector('.admin-tab'));
+    $('adminPanelOverlay').classList.add('open');
+  }
+  window.closeAdminPanel = () => $('adminPanelOverlay').classList.remove('open');
+  window.switchAdminTab = function (name, btn) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    $('adminTab-' + name).classList.add('active');
+  };
+
+  // ── Comunicados ──
+  function renderAdminComs() {
+    const el = $('adminComList');
+    if (!cachedComs.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum comunicado cadastrado ainda.</p>'; return; }
+    el.innerHTML = cachedComs.map(c => `
+      <div class="admin-list-item">
+        <span style="font-size:22px">📋</span>
+        <div class="admin-list-item-text">
+          <span class="admin-list-item-label">${esc(c.title)}</span>
+          <span class="admin-list-item-url">${esc(c.date)}${c.url ? ' · ' + esc(c.url) : ''}</span>
+        </div>
+        <button class="admin-list-del" onclick="deleteCom('${esc(c.id)}')">✕</button>
+      </div>`).join('');
+  }
+  window.addComunicado = async function () {
+    if (!currentUser) return window.openAdminLogin();
+    const title = $('comTitle').value.trim(), date = $('comDate').value.trim(), url = $('comUrl').value.trim();
+    if (!title || !date) { alert('Preencha título e data.'); return; }
+    if (url && !safeUrl(url)) { alert('URL inválida. Use http:// ou https://'); return; }
+    try {
+      await fb.F.addDoc(fb.F.collection(fb.db, 'comunicados'), { title, date, url, createdAt: Date.now() });
+      $('comTitle').value = ''; $('comDate').value = ''; $('comUrl').value = '';
+      showOk('comSuccess');
+    } catch (e) { alert('Erro ao salvar (' + e.code + '). Verifique as regras do Firestore.'); }
+  };
+  window.deleteCom = async function (id) {
+    if (!currentUser || !confirm('Remover este comunicado?')) return;
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'comunicados', id)); }
+    catch (e) { alert('Erro ao remover (' + e.code + ').'); }
+  };
+
+  // ── Links ──
+  function renderAdminLinks() {
+    const el = $('adminLinkList');
+    if (!cachedLinks.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum link cadastrado ainda.</p>'; return; }
+    el.innerHTML = cachedLinks.map(l => `
+      <div class="admin-list-item">
+        <span style="font-size:22px">${esc(l.icon || '🌐')}</span>
+        <div class="admin-list-item-text">
+          <span class="admin-list-item-label">${esc(l.label)}</span>
+          <span class="admin-list-item-url">${esc(l.url)}</span>
+        </div>
+        <button class="admin-list-del" onclick="deleteLink('${esc(l.id)}')">✕</button>
+      </div>`).join('');
+  }
+  window.addLink = async function () {
+    if (!currentUser) return window.openAdminLogin();
+    const icon = $('linkIcon').value.trim() || '🌐', label = $('linkLabel').value.trim(), url = $('linkUrl').value.trim();
+    if (!label || !url) { alert('Preencha nome e URL.'); return; }
+    if (!safeUrl(url))  { alert('URL inválida. Use http:// ou https://'); return; }
+    try {
+      await fb.F.addDoc(fb.F.collection(fb.db, 'links'), { icon, label, url, createdAt: Date.now() });
+      $('linkIcon').value = ''; $('linkLabel').value = ''; $('linkUrl').value = '';
+      showOk('linkSuccess');
+    } catch (e) { alert('Erro ao salvar (' + e.code + '). Verifique as regras do Firestore.'); }
+  };
+  window.deleteLink = async function (id) {
+    if (!currentUser || !confirm('Remover este link?')) return;
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'links', id)); }
+    catch (e) { alert('Erro ao remover (' + e.code + ').'); }
+  };
+
+  // ── Dashboard público (aparece só se houver conteúdo) ──
+  function renderDashboard() {
+    const has = cachedComs.length > 0 || cachedLinks.length > 0;
+    $('spHero').style.display      = has ? '' : 'none';
+    $('spDashboard').style.display = has ? '' : 'none';
+    const comList = document.querySelector('.sp-comunicados-list');
+    if (comList) {
+      comList.innerHTML = cachedComs.length ? cachedComs.map(c => {
+        const u = safeUrl(c.url);
+        return `<a class="sp-com-item" ${u ? `href="${esc(u)}" target="_blank" rel="noopener"` : 'style="cursor:default"'}>
+          <div class="sp-com-thumb">📋</div>
+          <div><div class="sp-com-title">${esc(c.title)}</div><div class="sp-com-date">${esc(c.date)}</div></div>
+        </a>`;
+      }).join('') : '<p style="padding:12px 4px;color:var(--muted);font-size:.85rem">Nenhum comunicado publicado.</p>';
+    }
+    const linksList = document.querySelector('.sp-links-list');
+    if (linksList) {
+      linksList.innerHTML = cachedLinks.length ? cachedLinks.map(l =>
+        `<a class="sp-link-btn" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" style="text-decoration:none">
+           <span class="sp-link-icon">${esc(l.icon || '🌐')}</span> ${esc(l.label)}
+         </a>`).join('')
+        : '<p style="padding:8px 4px;color:var(--muted);font-size:.85rem">Nenhum link cadastrado.</p>';
+    }
+  }
+
+  // ── Alterar senha ──
+  window.changePassword = async function () {
+    const atual = $('passAtual').value, nova = $('passNova').value, conf = $('passConfirm').value;
+    $('passError').style.display = 'none'; $('passSuccess').style.display = 'none';
+    if (!currentUser)    { showErr('passError', 'Sessão expirada. Entre novamente.'); return; }
+    if (nova.length < 6) { showErr('passError', 'A nova senha deve ter ao menos 6 caracteres.'); return; }
+    if (nova !== conf)   { showErr('passError', 'As senhas não coincidem.'); return; }
+    try {
+      const cred = fb.A.EmailAuthProvider.credential(currentUser.email, atual);
+      await fb.A.reauthenticateWithCredential(currentUser, cred);
+      await fb.A.updatePassword(currentUser, nova);
+      $('passAtual').value = $('passNova').value = $('passConfirm').value = '';
+      showOk('passSuccess');
+    } catch (e) {
+      showErr('passError', (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
+        ? 'Senha atual incorreta.' : 'Não foi possível alterar (' + e.code + ').');
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════════
+  //  TIPOS DE EXECUÇÃO — menu dinâmico (Firestore: coleção "tipos")
+  //  status: ativo (Disponível) · breve (Em breve) · oculto
+  // ═══════════════════════════════════════════════════════════
+  const COLORS = { azul:'14,165,233', ambar:'245,158,11', verde:'16,185,129', roxo:'167,139,250', vermelho:'239,68,68', rosa:'236,72,153' };
+  const colorStyle = k => COLORS[k] ? `background:rgba(${COLORS[k]},.12);border-color:rgba(${COLORS[k]},.3)` : '';
+  const STATUS_LABEL = { ativo: 'Disponível', breve: 'Em breve', oculto: 'Oculto' };
+  const inline = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  let tipoDocs = {};
+  let lastTipoSig = null;
+  let editingId = null;
+  const builtin = {};        // id -> padrões lidos do HTML original
+  const origSection = {};    // id -> innerHTML original da seção
+
+  function scanBuiltins() {
+    document.querySelectorAll('.type-grid .type-card').forEach(card => {
+      const m = (card.getAttribute('onclick') || '').match(/selectType\('([^']+)','([^']*)','([^']*)'/);
+      if (!m) return;
+      const id = m[1], info = card.querySelector('.tc-info');
+      let sub = [...info.children].find(el => el.tagName === 'DIV' && !el.classList.contains('tc-num') && !el.classList.contains('tc-name'));
+      if (!sub) { sub = document.createElement('div'); info.insertBefore(sub, info.querySelector('.tc-badge')); }
+      sub.className = 'tc-sub';
+      sub.style.cssText = 'font-size:11px;color:var(--muted);margin-top:3px;';
+      const sec = document.getElementById(id);
+      builtin[id] = {
+        id, card, icon: m[2], navName: m[3],
+        name: info.querySelector('.tc-name').textContent.trim(),
+        num: info.querySelector('.tc-num').textContent.trim(),
+        subtitle: sub.textContent.trim(),
+        status: card.classList.contains('soon') ? 'breve' : 'ativo',
+        iconStyle: card.querySelector('.tc-icon').getAttribute('style') || '',
+        placeholder: !!(sec && sec.querySelector('.coming-soon'))
+      };
+      card.dataset.tid = id;
+      if (sec) origSection[id] = sec.innerHTML;
+    });
+  }
+  scanBuiltins();
+
+  // tipo "efetivo" = padrão do HTML + alterações salvas no Firestore
+  function eff(id) {
+    const b = builtin[id], o = tipoDocs[id] || {};
+    if (b) return {
+      id, builtin: true, icon: o.icon || b.icon, name: o.name || b.name, navName: o.name || b.navName,
+      num: o.num || b.num, subtitle: o.subtitle !== undefined ? o.subtitle : b.subtitle,
+      status: o.status || b.status, color: o.color || '', iconStyle: o.color ? colorStyle(o.color) : b.iconStyle,
+      intro: o.intro || '', phases: o.phases || [], override: !!tipoDocs[id], placeholder: b.placeholder
+    };
+    const col = o.color || 'azul';
+    return {
+      id, builtin: false, icon: o.icon || '📄', name: o.name || id, navName: o.name || id,
+      num: o.num || '', subtitle: o.subtitle || '', status: o.status || 'ativo', color: col,
+      iconStyle: colorStyle(col), intro: o.intro || '', phases: o.phases || [], override: true
+    };
+  }
+
+  function paintCard(card, e) {
+    const info = card.querySelector('.tc-info');
+    info.querySelector('.tc-num').textContent  = e.num;
+    info.querySelector('.tc-name').textContent = e.name;
+    const sub = info.querySelector('.tc-sub');
+    sub.textContent = e.subtitle; sub.style.display = e.subtitle ? '' : 'none';
+    const badge = info.querySelector('.tc-badge');
+    badge.className = 'tc-badge ' + (e.status === 'ativo' ? 'badge-ok' : 'badge-soon');
+    badge.textContent = e.status === 'ativo' ? 'Disponível' : 'Em breve';
+    const ic = card.querySelector('.tc-icon'); ic.textContent = e.icon; ic.setAttribute('style', e.iconStyle);
+    card.classList.toggle('soon', e.status !== 'ativo');
+    card.style.display = e.status === 'oculto' ? 'none' : '';
+    card.removeAttribute('onclick');
+    card.onclick = () => selectType(e.id, e.icon, e.navName, card);
+  }
+  function makeCard(id) {
+    const b = document.createElement('button');
+    b.className = 'type-card'; b.dataset.custom = '1'; b.dataset.tid = id;
+    b.innerHTML = '<div class="tc-icon"></div><div class="tc-info"><div class="tc-num"></div><div class="tc-name"></div>' +
+      '<div class="tc-sub" style="font-size:11px;color:var(--muted);margin-top:3px;"></div><span class="tc-badge"></span></div>';
+    return b;
+  }
+
+  function headerHtml(e) {
+    return `<div class="section-header"><div class="section-icon" style="${e.iconStyle}">${esc(e.icon)}</div><div>` +
+           `<div class="section-tag">Tipo ${esc(e.num)} / Procedimento Padrão</div><div class="section-title">${esc(e.name)}</div></div></div>`;
+  }
+  function phasesHtml(e) {
+    const intro = e.intro ? `<div class="alert alert-info" style="margin-bottom:16px"><span class="alert-icon">ℹ️</span><div>${inline(e.intro)}</div></div>` : '';
+    const ph = (e.phases || []).map((p, i) => {
+      const pid = `${e.id}-p${i + 1}`;
+      const steps = (p.steps || []).map((t, j) => `<div class="step"><div class="step-num">${j + 1}</div><div class="step-content">${inline(t)}</div></div>`).join('');
+      const note = p.note ? `<div class="alert alert-warn" style="margin-top:12px;margin-bottom:0"><span class="alert-icon">⚠️</span><div>${inline(p.note)}</div></div>` : '';
+      return `<div class="phase-card${i === 0 ? ' open' : ''}" id="${esc(pid)}"><div class="phase-header" onclick="toggle('${esc(pid)}')">` +
+             `<span class="phase-num">PASSO ${String(i + 1).padStart(2, '0')}</span><span class="phase-title">${esc(p.title || 'Fase ' + (i + 1))}</span><span class="phase-toggle">▾</span></div>` +
+             `<div class="phase-body"><div class="steps">${steps}</div>${note}</div></div>`;
+    }).join('');
+    return intro + ph + '<div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>';
+  }
+
+  // aplica o catálogo (padrões + Firestore) no menu e nas seções
+  function applyTypes() {
+    const sig = JSON.stringify(tipoDocs);
+    if (sig === lastTipoSig) return;
+    lastTipoSig = sig;
+
+    const activeCard = document.querySelector('.type-card.active');
+    const shownId = activeCard ? activeCard.dataset.tid : null;
+    document.querySelectorAll('[data-custom]').forEach(el => el.remove());
+
+    // tipos originais
+    Object.keys(builtin).forEach(id => {
+      const b = builtin[id], e = eff(id), o = tipoDocs[id];
+      paintCard(b.card, e);
+      const sec = document.getElementById(id);
+      if (!sec || origSection[id] === undefined) return;
+      sec.innerHTML = origSection[id];                       // volta ao original
+      if (o) {
+        const t = sec.querySelector('.section-title'); if (t && o.name) t.textContent = e.name;
+        const ic = sec.querySelector('.section-icon'); if (ic && o.icon) ic.textContent = e.icon;
+        const tg = sec.querySelector('.section-tag');  if (tg && o.num) tg.textContent = tg.textContent.replace(/Tipo\s+\S+/, 'Tipo ' + e.num);
+        if (e.phases.length) {
+          const h = sec.querySelector('.section-header');
+          while (h && h.nextSibling) h.nextSibling.remove();
+          sec.insertAdjacentHTML('beforeend', phasesHtml(e));
+        }
+      }
+    });
+
+    // tipos criados pelo admin
+    const customIds = Object.keys(tipoDocs).filter(id => !builtin[id])
+      .sort((a, b) => (tipoDocs[a].createdAt || 0) - (tipoDocs[b].createdAt || 0));
+    const grid = document.querySelector('.type-grid');
+    let anchor = document.getElementById('jtx-jexec') || document.getElementById('busca');
+    customIds.forEach(id => {
+      const e = eff(id);
+      const card = makeCard(id); paintCard(card, e); grid.appendChild(card);
+      const sec = document.createElement('div');
+      sec.className = 'section'; sec.id = id; sec.dataset.custom = '1'; sec.style.display = 'none';
+      sec.innerHTML = headerHtml(e) + phasesHtml(e);
+      if (anchor) { anchor.insertAdjacentElement('afterend', sec); anchor = sec; } else document.body.appendChild(sec);
+      if (typeof TYPE_SECTIONS !== 'undefined' && !TYPE_SECTIONS.includes(id)) TYPE_SECTIONS.push(id);
+    });
+
+    // mantém (ou encerra) o tipo que o usuário estava lendo
+    if (shownId) {
+      const card = document.querySelector(`.type-card[data-tid="${shownId}"]`);
+      const sec = document.getElementById(shownId);
+      const alive = card && (builtin[shownId] || tipoDocs[shownId]) && eff(shownId).status === 'ativo';
+      const badge = document.getElementById('navActiveBadge');
+      if (alive) {
+        card.classList.add('active');
+        if (sec) sec.style.display = '';
+        const nm = document.getElementById('navActiveName'); if (nm) nm.textContent = eff(shownId).icon + ' ' + eff(shownId).navName;
+      } else {
+        if (card) card.classList.remove('active');
+        if (sec) sec.style.display = 'none';
+        if (badge) badge.style.display = 'none';
+      }
+    }
+
+    // contador do hero + busca
+    const visible = Object.keys(builtin).concat(customIds).filter(id => eff(id).status !== 'oculto').length;
+    const cnt = document.querySelector('.sp-hero-badge-num'); if (cnt) cnt.textContent = visible;
+    if (typeof searchIndex !== 'undefined') {
+      for (let i = searchIndex.length - 1; i >= 0; i--) if (searchIndex[i].dyn) searchIndex.splice(i, 1);
+      Object.keys(builtin).concat(customIds).forEach(id => {
+        const e = eff(id); if (e.status === 'oculto') return;
+        (e.phases || []).forEach((p, i) => searchIndex.push({
+          dyn: true, tag: `${e.name} · Fase ${String(i + 1).padStart(2, '0')}`, title: p.title || ('Fase ' + (i + 1)),
+          section: '#' + id, text: (p.steps || []).join('. ') + (p.note ? '. ' + p.note : '')
+        }));
+      });
+    }
+  }
+
+  // ── painel admin: lista ──
+  function renderAdminTipos() {
+    const el = $('adminTiposList'); if (!el) return;
+    const ids = Object.keys(builtin).concat(Object.keys(tipoDocs).filter(id => !builtin[id])
+      .sort((a, b) => (tipoDocs[a].createdAt || 0) - (tipoDocs[b].createdAt || 0)));
+    el.innerHTML = ids.map(id => {
+      const e = eff(id), st = e.status, i = esc(id);
+      const extra = (e.builtin ? '' : ' · personalizado') + (e.builtin && e.placeholder && !e.phases.length ? ' · sem conteúdo ainda' : '') + (e.builtin && e.phases.length ? ' · conteúdo editado' : '');
+      return `<div class="admin-list-item">
+        <span style="font-size:22px">${esc(e.icon)}</span>
+        <div class="admin-list-item-text">
+          <span class="admin-list-item-label">${esc(e.num)} · ${esc(e.name)}</span>
+          <span class="admin-list-item-url"><span class="tp-chip tp-${esc(st)}">${STATUS_LABEL[st] || st}</span>${extra}</span>
+        </div>
+        <div class="tp-actions">
+          <button class="tp-btn" onclick="tipoToggle('${i}')">${st === 'ativo' ? 'Desativar' : 'Ativar'}</button>
+          <button class="tp-btn" onclick="tipoEdit('${i}')">Editar</button>
+          ${e.builtin ? (tipoDocs[id] ? `<button class="tp-btn" onclick="tipoRestore('${i}')">Restaurar</button>` : '')
+                      : `<button class="admin-list-del" onclick="tipoDelete('${i}')">✕</button>`}
+        </div></div>`;
+    }).join('');
+  }
+
+  function requireAdmin() {
+    if (!currentUser) { window.openAdminLogin(); return false; }
+    if (!fb) { alert(FB_FAIL_MSG()); return false; }
+    return true;
+  }
+  const tipoErr = e => alert('Erro ao salvar (' + (e.code || e.message) + '). Confira se as regras do Firestore liberam a coleção "tipos".');
+
+  window.tipoToggle = async function (id) {
+    if (!requireAdmin()) return;
+    const novo = eff(id).status === 'ativo' ? 'breve' : 'ativo';
+    try { await fb.F.setDoc(fb.F.doc(fb.db, 'tipos', id), { status: novo, updatedAt: Date.now() }, { merge: true }); }
+    catch (e) { tipoErr(e); }
+  };
+  window.tipoDelete = async function (id) {
+    if (!requireAdmin() || !confirm('Excluir este tipo de execução e todo o seu conteúdo?')) return;
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'tipos', id)); } catch (e) { tipoErr(e); }
+  };
+  window.tipoRestore = async function (id) {
+    if (!requireAdmin() || !confirm('Restaurar este tipo ao original do manual? As alterações feitas serão perdidas.')) return;
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'tipos', id)); } catch (e) { tipoErr(e); }
+  };
+
+  // ── painel admin: formulário ──
+  function nextNum() {
+    const nums = Object.keys(builtin).concat(Object.keys(tipoDocs).filter(id => !builtin[id])).map(id => parseInt(eff(id).num, 10)).filter(n => !isNaN(n));
+    return String((nums.length ? Math.max(...nums) : 0) + 1).padStart(2, '0');
+  }
+  function addPhaseRow(p) {
+    const n = $('tpPhases').children.length + 1;
+    const row = document.createElement('div');
+    row.className = 'tp-phase';
+    row.innerHTML = `<div class="tp-phase-hdr"><strong class="tp-ph-n">Fase ${n}</strong><button class="admin-list-del" type="button" onclick="tpRemovePhase(this)">✕ Remover</button></div>` +
+      '<input class="tp-ph-title" type="text" placeholder="Título da fase (ex: Define — Configuração)">' +
+      '<textarea class="tp-ph-steps" rows="5" placeholder="Um passo por linha.&#10;Use `crases` para destacar comandos."></textarea>' +
+      '<textarea class="tp-ph-note" rows="2" placeholder="Observação / alerta desta fase (opcional)"></textarea>';
+    row.querySelector('.tp-ph-title').value = (p && p.title) || '';
+    row.querySelector('.tp-ph-steps').value = ((p && p.steps) || []).join('\n');
+    row.querySelector('.tp-ph-note').value  = (p && p.note) || '';
+    $('tpPhases').appendChild(row);
+  }
+  window.tpAddPhase = () => addPhaseRow(null);
+  window.tpRemovePhase = btn => {
+    btn.closest('.tp-phase').remove();
+    document.querySelectorAll('#tpPhases .tp-ph-n').forEach((el, i) => el.textContent = 'Fase ' + (i + 1));
+  };
+  function collectPhases() {
+    return [...document.querySelectorAll('#tpPhases .tp-phase')].map(r => ({
+      title: r.querySelector('.tp-ph-title').value.trim(),
+      steps: r.querySelector('.tp-ph-steps').value.split('\n').map(s => s.trim()).filter(Boolean),
+      note:  r.querySelector('.tp-ph-note').value.trim()
+    })).filter(p => p.title || p.steps.length);
+  }
+  function openTipoForm(id) {
+    editingId = id;
+    const e = id ? eff(id) : { name: '', num: nextNum(), subtitle: '', icon: '📄', color: 'azul', status: 'ativo', intro: '', phases: [], builtin: false };
+    $('tpTitleLbl').textContent = id ? 'Editar tipo de execução' : 'Novo tipo de execução';
+    $('tpBuiltinHint').style.display = e.builtin ? 'block' : 'none';
+    $('tpNome').value = e.name; $('tpNum').value = e.num; $('tpIcon').value = e.icon;
+    $('tpCor').value = e.color || ''; $('tpStatus').value = e.status;
+    $('tpSub').value = e.subtitle; $('tpIntro').value = e.intro;
+    $('tpPhases').innerHTML = '';
+    if (e.phases.length) e.phases.forEach(addPhaseRow); else if (!id) addPhaseRow(null);
+    $('tiposListView').style.display = 'none';
+    $('tiposEditView').style.display = '';
+  }
+  window.tipoNew  = () => openTipoForm(null);
+  window.tipoEdit = id => openTipoForm(id);
+  window.tipoBack = () => { $('tiposEditView').style.display = 'none'; $('tiposListView').style.display = ''; };
+
+  function uniqueId(name) {
+    let slug = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'tipo';
+    let id = 'x-' + slug, n = 2;
+    while (builtin[id] || tipoDocs[id] || document.getElementById(id)) id = 'x-' + slug + '-' + (n++);
+    return id;
+  }
+  window.tipoSave = async function () {
+    if (!requireAdmin()) return;
+    const name = $('tpNome').value.trim();
+    if (!name) { alert('Informe o nome do tipo.'); return; }
+    const data = {
+      name, num: $('tpNum').value.trim(), subtitle: $('tpSub').value.trim(), icon: $('tpIcon').value.trim() || '📄',
+      color: $('tpCor').value, status: $('tpStatus').value, intro: $('tpIntro').value.trim(),
+      phases: collectPhases(), updatedAt: Date.now()
+    };
+    let id = editingId;
+    if (!id) {
+      id = uniqueId(name); data.custom = true; data.createdAt = Date.now();
+      if (!data.num) data.num = nextNum();
+      if (!data.color) data.color = 'azul';
+    }
+    try {
+      await fb.F.setDoc(fb.F.doc(fb.db, 'tipos', id), data, { merge: true });
+      window.tipoBack(); showOk('tpSuccess');
+    } catch (e) { tipoErr(e); }
+  };
+
+  // ── Fechar overlays ao clicar fora ──
+  $('adminLoginOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) window.closeAdminLogin(); });
+  $('adminPanelOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) window.closeAdminPanel(); });
+})();
 </script>
 
 </body>
