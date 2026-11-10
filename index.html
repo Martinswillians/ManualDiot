@@ -1263,6 +1263,33 @@
   .tp-phase { border: 1px solid var(--border); border-left: 3px solid var(--sp-purple); border-radius: 6px; padding: 12px; margin-bottom: 10px; background: #fafafa; }
   .tp-phase-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: .85rem; color: var(--sp-purple-dark); }
   .tp-hint { background: #eff6ff; border: 1px solid #93c5fd; border-left: 4px solid #3b82f6; color: #1e40af; border-radius: 4px; padding: 10px 14px; font-size: .82rem; margin-bottom: 14px; }
+  /* ── IMAGENS DAS FASES + EDITOR ── */
+  .ie-overlay { display: none; position: fixed; inset: 0; background: rgba(10,10,25,.78); z-index: 3000; align-items: center; justify-content: center; padding: 16px; }
+  .ie-overlay.open { display: flex; }
+  .ie-modal { background: #fff; border-radius: 8px; border-top: 4px solid var(--sp-purple); width: 100%; max-width: 1100px; max-height: 96vh; display: flex; flex-direction: column; overflow: hidden; }
+  .ie-head { padding: 10px 16px; background: var(--sp-purple-light); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: .9rem; color: var(--sp-purple-dark); }
+  .ie-hint { font-size: 12px; color: var(--muted); }
+  .ie-bar { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--border); }
+  .ie-group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .ie-tool { background: #fff; border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .ie-tool:hover { border-color: var(--sp-purple); }
+  .ie-tool.active { background: var(--sp-purple); color: #fff; border-color: var(--sp-purple); }
+  .ie-sw { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--border); cursor: pointer; display: inline-block; }
+  .ie-sw.active { box-shadow: 0 0 0 2px var(--sp-purple); }
+  .ie-bar select, .ie-bar input[type=text] { padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 4px; font-size: .82rem; font-family: 'DM Sans', sans-serif; }
+  .ie-stage { flex: 1; overflow: auto; background: #2b2b3a; display: flex; align-items: center; justify-content: center; padding: 12px; min-height: 200px; }
+  #ieCanvas { max-width: 100%; max-height: calc(96vh - 240px); touch-action: none; background: #fff; cursor: crosshair; }
+  .ie-foot { display: flex; gap: 8px; align-items: center; padding: 10px 16px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .tp-img-actions { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .tp-thumb { display: flex; gap: 10px; align-items: center; border: 1px solid var(--border); border-radius: 6px; padding: 8px; background: #fff; margin-bottom: 8px; }
+  .tp-thumb img { width: 110px; height: 72px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); background: #f1f5f9; flex-shrink: 0; }
+  .tp-thumb-body { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .tp-thumb-body input { margin-bottom: 0 !important; }
+  .tp-thumb-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tp-imgs { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+  .tp-fig { margin: 0; }
+  .tp-img { width: 100%; height: auto; border: 1px solid var(--border); border-radius: 6px; display: block; background: #f1f5f9; min-height: 120px; cursor: zoom-in; }
+  .tp-fig figcaption { font-size: .82rem; color: var(--muted); margin-top: 6px; text-align: center; }
 </style>
 </head>
 <body>
@@ -3314,7 +3341,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
 
 <footer>
   <div class="footer-brand"><strong>DIOT</strong> · Dataprev &mdash; Manual Interno de Operações</div>
-  <div class="footer-ver">v20.3</div>
+  <div class="footer-ver">v20.4</div>
 </footer>
 
 <script>
@@ -3740,6 +3767,41 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
   </div>
 </div>
 
+<!-- ── EDITOR DE IMAGEM (capturas de tela) ── -->
+<div class="ie-overlay" id="ieOverlay">
+  <div class="ie-modal">
+    <div class="ie-head"><strong>🖼️ Editor de imagem</strong><span class="ie-hint" id="ieHint"></span></div>
+    <div class="ie-bar">
+      <div class="ie-group" id="ieTools">
+        <button type="button" class="ie-tool active" data-tool="arrow">➡️ Seta</button>
+        <button type="button" class="ie-tool" data-tool="rect">▭ Destacar</button>
+        <button type="button" class="ie-tool" data-tool="text">🔤 Texto</button>
+        <button type="button" class="ie-tool" data-tool="cover">⬛ Ocultar</button>
+        <button type="button" class="ie-tool" data-tool="crop">✂️ Recortar</button>
+        <button type="button" class="ie-tool" data-tool="erase">🗑️ Apagar</button>
+      </div>
+      <div class="ie-group" id="ieColors">
+        <span class="ie-sw active" data-color="#ef4444" style="background:#ef4444" title="Vermelho"></span>
+        <span class="ie-sw" data-color="#facc15" style="background:#facc15" title="Amarelo"></span>
+        <span class="ie-sw" data-color="#22c55e" style="background:#22c55e" title="Verde"></span>
+        <span class="ie-sw" data-color="#3b82f6" style="background:#3b82f6" title="Azul"></span>
+        <span class="ie-sw" data-color="#111111" style="background:#111111" title="Preto"></span>
+        <select id="ieSize" title="Espessura / tamanho"><option value="2">Fino</option><option value="4" selected>Médio</option><option value="7">Grosso</option></select>
+        <input type="text" id="ieText" placeholder="Texto a inserir…" style="display:none">
+      </div>
+    </div>
+    <div class="ie-stage"><canvas id="ieCanvas"></canvas></div>
+    <div class="ie-foot">
+      <button type="button" class="admin-btn admin-btn-secondary" id="ieUndo">↶ Desfazer</button>
+      <button type="button" class="admin-btn admin-btn-secondary" id="ieApplyCrop" style="display:none">✂️ Aplicar recorte</button>
+      <span style="flex:1"></span>
+      <button type="button" class="admin-btn admin-btn-secondary" id="ieCancel">Cancelar</button>
+      <button type="button" class="admin-btn admin-btn-primary" id="ieDone">✔ Usar imagem</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="tpFile" accept="image/*" style="display:none">
+
 <script>
 // ═══════════════════════════════════════════════════════════
 //  PAINEL ADMIN · Firebase Auth + Firestore
@@ -3748,7 +3810,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
 //  de rede/extensão gera uma mensagem clara em vez de "not defined".
 // ═══════════════════════════════════════════════════════════
 (function () {
-  const APP_VERSION = 'v20.3';
+  const APP_VERSION = 'v20.4';
   const FB_BASE = 'https://www.gstatic.com/firebasejs/10.12.2/';
   const firebaseConfig = {
     apiKey:            "AIzaSyB-TABtWNh4vlmAsd5ohGpkASQqsO_nQ6E",
@@ -4084,11 +4146,13 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     const intro = e.intro ? `<div class="alert alert-info" style="margin-bottom:16px"><span class="alert-icon">ℹ️</span><div>${inline(e.intro)}</div></div>` : '';
     const ph = (e.phases || []).map((p, i) => {
       const pid = `${e.id}-p${i + 1}`;
+      const imgs = (p.images || []).length ? '<div class="tp-imgs">' + p.images.map(im =>
+        `<figure class="tp-fig"><img class="tp-img" data-img="${esc(im.id)}" alt="${esc(im.caption || '')}" src="${PIXEL}">${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ''}</figure>`).join('') + '</div>' : '';
       const steps = (p.steps || []).map((t, j) => `<div class="step"><div class="step-num">${j + 1}</div><div class="step-content">${inline(t)}</div></div>`).join('');
       const note = p.note ? `<div class="alert alert-warn" style="margin-top:12px;margin-bottom:0"><span class="alert-icon">⚠️</span><div>${inline(p.note)}</div></div>` : '';
       return `<div class="phase-card${i === 0 ? ' open' : ''}" id="${esc(pid)}"><div class="phase-header" onclick="toggle('${esc(pid)}')">` +
              `<span class="phase-num">PASSO ${String(i + 1).padStart(2, '0')}</span><span class="phase-title">${esc(p.title || 'Fase ' + (i + 1))}</span><span class="phase-toggle">▾</span></div>` +
-             `<div class="phase-body"><div class="steps">${steps}</div>${note}</div></div>`;
+             `<div class="phase-body"><div class="steps">${steps}</div>${imgs}${note}</div></div>`;
     }).join('');
     return intro + ph + '<div class="obs-box"><span class="obs-box-icon">👨‍💼</span><div><strong>Ficou com dúvida?</strong> Caso fique com alguma dúvida, favor tirar as dúvidas com o <strong>líder ou gerente da equipe</strong> antes de prosseguir.</div></div>';
   }
@@ -4154,6 +4218,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
       }
     }
 
+    hydrateImages();
     // contador do hero + busca
     const visible = Object.keys(builtin).concat(customIds).filter(id => eff(id).status !== 'oculto').length;
     const cnt = document.querySelector('.sp-hero-badge-num'); if (cnt) cnt.textContent = visible;
@@ -4197,7 +4262,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     if (!fb) { alert(FB_FAIL_MSG()); return false; }
     return true;
   }
-  const tipoErr = e => alert('Erro ao salvar (' + (e.code || e.message) + '). Confira se as regras do Firestore liberam a coleção "tipos".');
+  const tipoErr = e => alert('Erro ao salvar (' + (e.code || e.message) + '). Confira se as regras do Firestore liberam as coleções "tipos" e "imagens".');
 
   window.tipoToggle = async function (id) {
     if (!requireAdmin()) return;
@@ -4207,11 +4272,13 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
   };
   window.tipoDelete = async function (id) {
     if (!requireAdmin() || !confirm('Excluir este tipo de execução e todo o seu conteúdo?')) return;
-    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'tipos', id)); } catch (e) { tipoErr(e); }
+    const imgIds = imageIdsOf((tipoDocs[id] || {}).phases);
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'tipos', id)); await deleteImages(imgIds); } catch (e) { tipoErr(e); }
   };
   window.tipoRestore = async function (id) {
     if (!requireAdmin() || !confirm('Restaurar este tipo ao original do manual? As alterações feitas serão perdidas.')) return;
-    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'tipos', id)); } catch (e) { tipoErr(e); }
+    const imgIds = imageIdsOf((tipoDocs[id] || {}).phases);
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'tipos', id)); await deleteImages(imgIds); } catch (e) { tipoErr(e); }
   };
 
   // ── painel admin: formulário ──
@@ -4223,14 +4290,25 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     const n = $('tpPhases').children.length + 1;
     const row = document.createElement('div');
     row.className = 'tp-phase';
+    row._imgs = ((p && p.images) || []).map(im => ({ id: im.id, caption: im.caption || '' }));
     row.innerHTML = `<div class="tp-phase-hdr"><strong class="tp-ph-n">Fase ${n}</strong><button class="admin-list-del" type="button" onclick="tpRemovePhase(this)">✕ Remover</button></div>` +
       '<input class="tp-ph-title" type="text" placeholder="Título da fase (ex: Define — Configuração)">' +
       '<textarea class="tp-ph-steps" rows="5" placeholder="Um passo por linha.&#10;Use `crases` para destacar comandos."></textarea>' +
+      '<div class="tp-imgs-edit"></div>' +
+      '<div class="tp-img-actions"><button type="button" class="tp-btn tp-add-img">🖼️ Adicionar imagem</button><span>ou cole um print com Ctrl+V · arraste um arquivo aqui</span></div>' +
       '<textarea class="tp-ph-note" rows="2" placeholder="Observação / alerta desta fase (opcional)"></textarea>';
     row.querySelector('.tp-ph-title').value = (p && p.title) || '';
     row.querySelector('.tp-ph-steps').value = ((p && p.steps) || []).join('\n');
     row.querySelector('.tp-ph-note').value  = (p && p.note) || '';
+    row.addEventListener('focusin', () => { lastRow = row; });
+    row.querySelector('.tp-add-img').addEventListener('click', () => { lastRow = pendingRow = row; $('tpFile').click(); });
+    row.addEventListener('dragover', e => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
+    row.addEventListener('drop', e => {
+      const f = e.dataTransfer && [...e.dataTransfer.files].find(x => x.type.startsWith('image/'));
+      if (f) { e.preventDefault(); lastRow = row; addImageToRow(row, f); }
+    });
     $('tpPhases').appendChild(row);
+    renderRowImgs(row);
   }
   window.tpAddPhase = () => addPhaseRow(null);
   window.tpRemovePhase = btn => {
@@ -4241,8 +4319,9 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     return [...document.querySelectorAll('#tpPhases .tp-phase')].map(r => ({
       title: r.querySelector('.tp-ph-title').value.trim(),
       steps: r.querySelector('.tp-ph-steps').value.split('\n').map(s => s.trim()).filter(Boolean),
-      note:  r.querySelector('.tp-ph-note').value.trim()
-    })).filter(p => p.title || p.steps.length);
+      note:  r.querySelector('.tp-ph-note').value.trim(),
+      images: (r._imgs || []).map(im => ({ id: im.id, data: im.data, caption: (im.caption || '').trim() }))
+    })).filter(p => p.title || p.steps.length || p.images.length);
   }
   function openTipoForm(id) {
     editingId = id;
@@ -4271,22 +4350,318 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     if (!requireAdmin()) return;
     const name = $('tpNome').value.trim();
     if (!name) { alert('Informe o nome do tipo.'); return; }
-    const data = {
-      name, num: $('tpNum').value.trim(), subtitle: $('tpSub').value.trim(), icon: $('tpIcon').value.trim() || '📄',
-      color: $('tpCor').value, status: $('tpStatus').value, intro: $('tpIntro').value.trim(),
-      phases: collectPhases(), updatedAt: Date.now()
-    };
-    let id = editingId;
-    if (!id) {
-      id = uniqueId(name); data.custom = true; data.createdAt = Date.now();
-      if (!data.num) data.num = nextNum();
-      if (!data.color) data.color = 'azul';
-    }
+    const btn = document.querySelector('#tiposEditView .admin-btn-primary'), lbl = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Salvando…';
+    const created = [];
     try {
+      const phases = collectPhases();
+      const origIds = imageIdsOf(editingId ? (tipoDocs[editingId] || {}).phases : []);
+      for (const p of phases) {                      // envia imagens novas/editadas
+        const out = [];
+        for (const im of p.images) {
+          if (im.data) {
+            const ref = await fb.F.addDoc(fb.F.collection(fb.db, 'imagens'), { data: im.data, createdAt: Date.now() });
+            created.push(ref.id); imgCache.set(ref.id, Promise.resolve(im.data));
+            out.push({ id: ref.id, caption: im.caption });
+          } else out.push({ id: im.id, caption: im.caption });
+        }
+        p.images = out;
+      }
+      const data = {
+        name, num: $('tpNum').value.trim(), subtitle: $('tpSub').value.trim(), icon: $('tpIcon').value.trim() || '📄',
+        color: $('tpCor').value, status: $('tpStatus').value, intro: $('tpIntro').value.trim(),
+        phases, updatedAt: Date.now()
+      };
+      let id = editingId;
+      if (!id) {
+        id = uniqueId(name); data.custom = true; data.createdAt = Date.now();
+        if (!data.num) data.num = nextNum();
+        if (!data.color) data.color = 'azul';
+      }
       await fb.F.setDoc(fb.F.doc(fb.db, 'tipos', id), data, { merge: true });
+      const finalIds = imageIdsOf(phases);           // apaga imagens que saíram do tipo
+      await deleteImages([...origIds].filter(i => !finalIds.has(i)));
       window.tipoBack(); showOk('tpSuccess');
-    } catch (e) { tipoErr(e); }
+    } catch (e) {
+      await deleteImages(created);                   // desfaz uploads se algo falhou
+      tipoErr(e);
+    } finally { btn.disabled = false; btn.textContent = lbl; }
   };
+
+  // ═══════════════════════════════════════════════════════════
+  //  IMAGENS DAS FASES (coleção "imagens") + EDITOR DE CAPTURAS
+  //  Plano Spark = sem Storage: a imagem é comprimida (WebP/JPEG,
+  //  ≤ ~800 KB) e guardada no Firestore; só é baixada ao abrir a fase.
+  // ═══════════════════════════════════════════════════════════
+  const PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+  const imgCache = new Map();
+  function getImageData(id) {
+    if (!imgCache.has(id)) {
+      imgCache.set(id, (async () => {
+        if (!(await fbReady)) return null;
+        try {
+          const s = await fb.F.getDoc(fb.F.doc(fb.db, 'imagens', id));
+          return s.exists() ? (s.data().data || null) : null;
+        } catch (e) { console.warn('[DIOT] imagem', id, e.code); imgCache.delete(id); return null; }
+      })());
+    }
+    return imgCache.get(id);
+  }
+  let imgObserver = null;
+  async function loadManualImg(img) {
+    const d = await getImageData(img.dataset.img);
+    if (d) {
+      img.src = d; img.classList.add('loaded'); img.title = 'Clique para ampliar';
+      img.onclick = () => { if (typeof openScreen === 'function') openScreen(d, img.alt || 'Captura de tela'); };
+    } else { img.alt = img.alt || 'Imagem indisponível'; }
+  }
+  function hydrateImages() {
+    const list = document.querySelectorAll('img.tp-img[data-img]:not([data-hyd])');
+    if (!list.length) return;
+    if (!imgObserver && 'IntersectionObserver' in window) {
+      imgObserver = new IntersectionObserver(es => es.forEach(en => {
+        if (en.isIntersecting) { imgObserver.unobserve(en.target); loadManualImg(en.target); }
+      }), { rootMargin: '300px' });
+    }
+    list.forEach(img => { img.dataset.hyd = '1'; imgObserver ? imgObserver.observe(img) : loadManualImg(img); });
+  }
+  const imageIdsOf = phases => new Set((phases || []).flatMap(p => (p.images || []).map(i => i.id)).filter(Boolean));
+  const deleteImages = ids => Promise.allSettled([...ids].map(i => fb.F.deleteDoc(fb.F.doc(fb.db, 'imagens', i))));
+
+  // ── editor (canvas) ──
+  const IE = { base: null, objs: [], hist: [], tool: 'arrow', color: '#ef4444', sw: 4, drag: null, crop: null, resolve: null };
+  const IE_HINTS = {
+    arrow: 'Arraste na imagem para desenhar uma seta.',
+    rect:  'Arraste para destacar uma área com um retângulo.',
+    text:  'Digite o texto no campo ao lado e clique na imagem para posicionar.',
+    cover: 'Arraste sobre dados sensíveis para ocultá-los (tarja preta permanente).',
+    crop:  'Arraste para marcar a área que FICA; clique em "Aplicar recorte" — o restante é descartado.',
+    erase: 'Clique em uma anotação para apagá-la.'
+  };
+  const ieC = () => $('ieCanvas');
+  const ieK = () => IE.base.width / 900;
+  const ieHint = t => { $('ieHint').textContent = t || ''; };
+  function ieSync() { const c = ieC(); c.width = IE.base.width; c.height = IE.base.height; }
+  function ieSnap() {
+    IE.hist.push({ base: IE.base, objs: JSON.parse(JSON.stringify(IE.objs)) });
+    if (IE.hist.length > 40) IE.hist.shift();
+  }
+  function ieDraw(x, o) {
+    const k = ieK();
+    x.save(); x.lineCap = 'round'; x.lineJoin = 'round';
+    if (o.t === 'arrow') {
+      const lw = o.sw * k, dx = o.x2 - o.x1, dy = o.y2 - o.y1;
+      if (Math.hypot(dx, dy) > 2) {
+        const ang = Math.atan2(dy, dx), head = Math.max(14 * k, lw * 4);
+        x.strokeStyle = x.fillStyle = o.color; x.lineWidth = lw;
+        x.beginPath(); x.moveTo(o.x1, o.y1);
+        x.lineTo(o.x2 - Math.cos(ang) * head * 0.6, o.y2 - Math.sin(ang) * head * 0.6); x.stroke();
+        x.beginPath(); x.moveTo(o.x2, o.y2);
+        x.lineTo(o.x2 - head * Math.cos(ang - 0.45), o.y2 - head * Math.sin(ang - 0.45));
+        x.lineTo(o.x2 - head * Math.cos(ang + 0.45), o.y2 - head * Math.sin(ang + 0.45));
+        x.closePath(); x.fill();
+      }
+    } else if (o.t === 'rect') {
+      x.strokeStyle = o.color; x.lineWidth = o.sw * k;
+      x.strokeRect(Math.min(o.x1, o.x2), Math.min(o.y1, o.y2), Math.abs(o.x2 - o.x1), Math.abs(o.y2 - o.y1));
+    } else if (o.t === 'cover') {
+      x.fillStyle = '#000';
+      x.fillRect(Math.min(o.x1, o.x2), Math.min(o.y1, o.y2), Math.abs(o.x2 - o.x1), Math.abs(o.y2 - o.y1));
+    } else if (o.t === 'text') {
+      const fs = (o.sw * 3 + 11) * k;
+      x.font = `600 ${fs}px "DM Sans", Arial, sans-serif`; x.textBaseline = 'middle';
+      const w = x.measureText(o.text).width, pad = fs * 0.35, h = fs + pad * 2;
+      x.fillStyle = o.color; x.fillRect(o.x1, o.y1, w + pad * 2, h);
+      x.fillStyle = (o.color === '#facc15') ? '#111' : '#fff';
+      x.fillText(o.text, o.x1 + pad, o.y1 + h / 2);
+      o._bb = [o.x1, o.y1, o.x1 + w + pad * 2, o.y1 + h];
+    }
+    x.restore();
+  }
+  function ieRender() {
+    if (!IE.base) return;
+    const c = ieC(), x = c.getContext('2d');
+    x.clearRect(0, 0, c.width, c.height); x.drawImage(IE.base, 0, 0);
+    IE.objs.forEach(o => ieDraw(x, o));
+    if (IE.drag && IE.drag.obj) ieDraw(x, IE.drag.obj);
+    if (IE.tool === 'crop' && IE.crop) {
+      const r = IE.crop; x.save();
+      x.fillStyle = 'rgba(0,0,0,.55)'; x.beginPath(); x.rect(0, 0, c.width, c.height); x.rect(r.x, r.y, r.w, r.h); x.fill('evenodd');
+      x.strokeStyle = '#fff'; x.setLineDash([8, 6]); x.lineWidth = 2 * ieK(); x.strokeRect(r.x, r.y, r.w, r.h); x.restore();
+    }
+  }
+  function distSeg(px, py, ax, ay, bx, by) {
+    const dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+    let t = l2 ? ((px - ax) * dx + (py - ay) * dy) / l2 : 0; t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+  }
+  function ieHit(o, px, py) {
+    const tol = 12 * ieK();
+    if (o.t === 'arrow') return distSeg(px, py, o.x1, o.y1, o.x2, o.y2) < tol;
+    if (o.t === 'text')  { const b = o._bb; return !!b && px >= b[0] && px <= b[2] && py >= b[1] && py <= b[3]; }
+    return px >= Math.min(o.x1, o.x2) - tol && px <= Math.max(o.x1, o.x2) + tol && py >= Math.min(o.y1, o.y2) - tol && py <= Math.max(o.y1, o.y2) + tol;
+  }
+  function iePt(e) {
+    const c = ieC(), r = c.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * c.width / r.width, y: (e.clientY - r.top) * c.height / r.height };
+  }
+  function ieSetTool(t) {
+    IE.tool = t; IE.drag = null;
+    if (t !== 'crop') { IE.crop = null; $('ieApplyCrop').style.display = 'none'; }
+    document.querySelectorAll('#ieTools .ie-tool').forEach(b => b.classList.toggle('active', b.dataset.tool === t));
+    $('ieText').style.display = t === 'text' ? '' : 'none';
+    ieHint(IE_HINTS[t]); ieC().style.cursor = t === 'erase' ? 'pointer' : 'crosshair'; ieRender();
+  }
+  function ieDown(e) {
+    if (!IE.base) return;
+    const p = iePt(e);
+    if (IE.tool === 'text') {
+      const t = $('ieText').value.trim();
+      if (!t) { $('ieText').focus(); ieHint('Digite o texto no campo ao lado e clique de novo na imagem.'); return; }
+      ieSnap(); IE.objs.push({ t: 'text', x1: p.x, y1: p.y, text: t, color: IE.color, sw: IE.sw }); ieRender(); return;
+    }
+    if (IE.tool === 'erase') {
+      for (let i = IE.objs.length - 1; i >= 0; i--) if (ieHit(IE.objs[i], p.x, p.y)) { ieSnap(); IE.objs.splice(i, 1); break; }
+      ieRender(); return;
+    }
+    try { ieC().setPointerCapture(e.pointerId); } catch (_) {}
+    IE.drag = { sx: p.x, sy: p.y, obj: null };
+  }
+  function ieMove(e) {
+    const d = IE.drag; if (!d) return;
+    const p = iePt(e), c = ieC();
+    if (IE.tool === 'crop') {
+      const x1 = Math.max(0, Math.min(d.sx, p.x)), y1 = Math.max(0, Math.min(d.sy, p.y));
+      const x2 = Math.min(c.width, Math.max(d.sx, p.x)), y2 = Math.min(c.height, Math.max(d.sy, p.y));
+      IE.crop = { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
+      $('ieApplyCrop').style.display = (IE.crop.w > 8 && IE.crop.h > 8) ? '' : 'none';
+    } else d.obj = { t: IE.tool, x1: d.sx, y1: d.sy, x2: p.x, y2: p.y, color: IE.color, sw: IE.sw };
+    ieRender();
+  }
+  function ieUp() {
+    const d = IE.drag; if (!d) return; IE.drag = null;
+    if (IE.tool !== 'crop' && d.obj) {
+      const o = d.obj;
+      if (Math.hypot(o.x2 - o.x1, o.y2 - o.y1) > 6 * ieK()) { ieSnap(); IE.objs.push(o); }
+    }
+    ieRender();
+  }
+  function ieApplyCrop() {
+    const r = IE.crop; if (!r || r.w < 8 || r.h < 8) return;
+    ieSnap();
+    const x = Math.round(r.x), y = Math.round(r.y), w = Math.round(r.w), h = Math.round(r.h);
+    const nb = document.createElement('canvas'); nb.width = w; nb.height = h;
+    nb.getContext('2d').drawImage(IE.base, x, y, w, h, 0, 0, w, h);
+    IE.objs = IE.objs.map(o => {
+      const n = { ...o, x1: o.x1 - x, y1: o.y1 - y }; if (o.x2 !== undefined) { n.x2 = o.x2 - x; n.y2 = o.y2 - y; } delete n._bb; return n;
+    }).filter(o => {
+      const xs = [o.x1, o.x2 ?? o.x1], ys = [o.y1, o.y2 ?? o.y1];
+      return Math.max(...xs) > 0 && Math.min(...xs) < w && Math.max(...ys) > 0 && Math.min(...ys) < h;
+    });
+    IE.base = nb; IE.crop = null; $('ieApplyCrop').style.display = 'none'; ieSync(); ieRender();
+  }
+  function ieUndo() {
+    const s = IE.hist.pop(); if (!s) return;
+    IE.base = s.base; IE.objs = s.objs; IE.crop = null; $('ieApplyCrop').style.display = 'none'; ieSync(); ieRender();
+  }
+  function ieExport() {
+    const MAXLEN = 800000;
+    let s = Math.min(1, 1400 / IE.base.width), q = 0.9, url = '';
+    const out = document.createElement('canvas');
+    for (let i = 0; i < 12; i++) {
+      out.width = Math.max(1, Math.round(IE.base.width * s)); out.height = Math.max(1, Math.round(IE.base.height * s));
+      const x = out.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, out.width, out.height);
+      x.setTransform(s, 0, 0, s, 0, 0); x.drawImage(IE.base, 0, 0); IE.objs.forEach(o => ieDraw(x, o));
+      url = out.toDataURL('image/webp', q);
+      if (!url.startsWith('data:image/webp')) url = out.toDataURL('image/jpeg', q);
+      if (url.length <= MAXLEN) break;
+      if (q > 0.62) q -= 0.1; else s *= 0.85;
+    }
+    return url;
+  }
+  function ieClose(result) {
+    $('ieOverlay').classList.remove('open');
+    const r = IE.resolve; IE.resolve = null; IE.base = null; IE.objs = []; IE.hist = []; IE.crop = null; IE.drag = null;
+    if (r) r(result);
+  }
+  function loadImageEl(src) {
+    return new Promise((res, rej) => {
+      const im = new Image(); im.onload = () => res(im); im.onerror = rej;
+      if (typeof src === 'string') im.src = src;
+      else { const fr = new FileReader(); fr.onload = () => { im.src = fr.result; }; fr.onerror = rej; fr.readAsDataURL(src); }
+    });
+  }
+  function openImageEditor(src) {
+    return new Promise(async resolve => {
+      try {
+        const img = await loadImageEl(src);
+        const sc = Math.min(1, 1800 / Math.max(img.width, img.height));
+        const base = document.createElement('canvas');
+        base.width = Math.max(1, Math.round(img.width * sc)); base.height = Math.max(1, Math.round(img.height * sc));
+        base.getContext('2d').drawImage(img, 0, 0, base.width, base.height);
+        Object.assign(IE, { base, objs: [], hist: [], crop: null, drag: null, resolve });
+        ieSync(); ieSetTool('arrow'); $('ieOverlay').classList.add('open');
+      } catch (e) { alert('Não foi possível abrir a imagem.'); resolve(null); }
+    });
+  }
+  const cv = ieC();
+  cv.addEventListener('pointerdown', ieDown); cv.addEventListener('pointermove', ieMove);
+  cv.addEventListener('pointerup', ieUp); cv.addEventListener('pointercancel', ieUp);
+  $('ieTools').addEventListener('click', e => { const b = e.target.closest('.ie-tool'); if (b) ieSetTool(b.dataset.tool); });
+  $('ieColors').addEventListener('click', e => {
+    const s = e.target.closest('.ie-sw'); if (!s) return; IE.color = s.dataset.color;
+    document.querySelectorAll('#ieColors .ie-sw').forEach(x => x.classList.toggle('active', x === s));
+  });
+  $('ieSize').addEventListener('change', e => { IE.sw = parseInt(e.target.value, 10); });
+  $('ieUndo').addEventListener('click', ieUndo);
+  $('ieApplyCrop').addEventListener('click', ieApplyCrop);
+  $('ieCancel').addEventListener('click', () => ieClose(null));
+  $('ieDone').addEventListener('click', () => { if (IE.base) ieClose(ieExport()); });
+  document.addEventListener('keydown', e => {
+    if (!$('ieOverlay').classList.contains('open')) return;
+    if (e.key === 'Escape') { e.stopPropagation(); ieClose(null); }
+    else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); ieUndo(); }
+  }, true);
+
+  // ── imagens dentro do formulário de fases ──
+  let lastRow = null, pendingRow = null;
+  function renderRowImgs(row) {
+    const box = row.querySelector('.tp-imgs-edit'); box.innerHTML = '';
+    row._imgs.forEach((im, i) => {
+      const el = document.createElement('div'); el.className = 'tp-thumb';
+      el.innerHTML = '<img alt=""><div class="tp-thumb-body"><input type="text" class="tp-cap" placeholder="Legenda da imagem (opcional)">' +
+        '<div class="tp-thumb-btns"><button type="button" class="tp-btn" data-a="edit">✏️ Editar imagem</button><button type="button" class="tp-btn" data-a="rm">Remover</button></div></div>';
+      const img = el.querySelector('img');
+      if (im.data) img.src = im.data; else getImageData(im.id).then(d => { if (d) img.src = d; });
+      const cap = el.querySelector('.tp-cap'); cap.value = im.caption || ''; cap.oninput = () => { im.caption = cap.value; };
+      el.querySelector('[data-a=edit]').onclick = async () => {
+        const src = im.data || await getImageData(im.id);
+        if (!src) { alert('Não foi possível carregar a imagem.'); return; }
+        const out = await openImageEditor(src); if (out) im.data = out; renderRowImgs(row);
+      };
+      el.querySelector('[data-a=rm]').onclick = () => { row._imgs.splice(i, 1); renderRowImgs(row); };
+      box.appendChild(el);
+    });
+  }
+  async function addImageToRow(row, source) {
+    const out = await openImageEditor(source);
+    if (out) { row._imgs.push({ data: out, caption: '' }); renderRowImgs(row); }
+  }
+  function targetRow() {
+    let rows = [...document.querySelectorAll('#tpPhases .tp-phase')];
+    if (!rows.length) { addPhaseRow(null); rows = [...document.querySelectorAll('#tpPhases .tp-phase')]; }
+    return (lastRow && lastRow.isConnected) ? lastRow : rows[rows.length - 1];
+  }
+  $('tpFile').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    if (f) addImageToRow((pendingRow && pendingRow.isConnected) ? pendingRow : targetRow(), f);
+  });
+  document.addEventListener('paste', e => {
+    if (!$('adminPanelOverlay').classList.contains('open') || $('tiposEditView').style.display === 'none' || $('ieOverlay').classList.contains('open')) return;
+    const it = [...((e.clipboardData && e.clipboardData.items) || [])].find(i => i.type.startsWith('image/'));
+    if (!it) return;
+    e.preventDefault(); addImageToRow(targetRow(), it.getAsFile());
+  });
 
   // ── Fechar overlays ao clicar fora ──
   $('adminLoginOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) window.closeAdminLogin(); });
