@@ -1290,6 +1290,15 @@
   .tp-fig { margin: 0; }
   .tp-img { width: 100%; height: auto; border: 1px solid var(--border); border-radius: 6px; display: block; background: #f1f5f9; min-height: 120px; cursor: zoom-in; }
   .tp-fig figcaption { font-size: .82rem; color: var(--muted); margin-top: 6px; text-align: center; }
+  /* ── MENU SUPERIOR: submenus + listas admin ── */
+  .sp-nav-links { align-self: stretch; }
+  .sp-nav-dd { position: relative; align-self: stretch; display: flex; align-items: center; }
+  .sp-nav-menu { display: none; position: absolute; top: 100%; left: 0; min-width: 230px; max-width: 360px; background: #fff; border: 1px solid var(--border); border-top: 3px solid var(--sp-purple); border-radius: 0 0 6px 6px; box-shadow: 0 8px 24px rgba(0,0,0,.18); padding: 6px; z-index: 400; }
+  .sp-nav-dd:hover .sp-nav-menu, .sp-nav-dd.open .sp-nav-menu { display: block; }
+  .sp-nav-menu a { display: block; padding: 8px 12px; border-radius: 4px; color: var(--text); font-size: 13px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sp-nav-menu a:hover { background: var(--sp-purple-light); color: var(--sp-purple); }
+  .admin-list-item-text { min-width: 0; }
+  .al-trunc { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; word-break: normal !important; }
 </style>
 </head>
 <body>
@@ -3341,7 +3350,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
 
 <footer>
   <div class="footer-brand"><strong>DIOT</strong> · Dataprev &mdash; Manual Interno de Operações</div>
-  <div class="footer-ver">v20.4</div>
+  <div class="footer-ver">v20.5</div>
 </footer>
 
 <script>
@@ -3646,6 +3655,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
       <button class="admin-tab active" onclick="switchAdminTab('comunicados', this)">📢 Comunicados</button>
       <button class="admin-tab" onclick="switchAdminTab('links', this)">🔗 Links Operacionais</button>
       <button class="admin-tab" onclick="switchAdminTab('tipos', this)">🧩 Tipos de Execução</button>
+      <button class="admin-tab" onclick="switchAdminTab('menu', this)">🧭 Menu superior</button>
       <button class="admin-tab" onclick="switchAdminTab('conta', this)">👤 Conta</button>
     </div>
 
@@ -3654,7 +3664,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
       <div class="admin-section-label">Comunicados publicados</div>
       <div id="adminComList"></div>
       <hr class="admin-divider">
-      <div class="admin-section-label">Adicionar comunicado</div>
+      <div class="admin-section-label" id="comFormLbl">Adicionar comunicado</div>
       <div class="admin-field">
         <label>Título</label>
         <input type="text" id="comTitle" placeholder="ex: Publicação da nova versão do manual — V21">
@@ -3668,9 +3678,10 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
         <input type="url" id="comUrl" placeholder="https://...">
       </div>
       <div class="admin-btn-row">
-        <button class="admin-btn admin-btn-primary" onclick="addComunicado()">➕ Adicionar Comunicado</button>
+        <button class="admin-btn admin-btn-secondary" id="comCancelBtn" style="display:none" onclick="cancelEditCom()">Cancelar edição</button>
+        <button class="admin-btn admin-btn-primary" id="comSaveBtn" onclick="addComunicado()">➕ Adicionar Comunicado</button>
       </div>
-      <div class="admin-success" id="comSuccess">Comunicado adicionado com sucesso!</div>
+      <div class="admin-success" id="comSuccess">Comunicado salvo com sucesso!</div>
     </div>
 
     <!-- TAB: LINKS -->
@@ -3678,7 +3689,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
       <div class="admin-section-label">Links operacionais publicados</div>
       <div id="adminLinkList"></div>
       <hr class="admin-divider">
-      <div class="admin-section-label">Adicionar link</div>
+      <div class="admin-section-label" id="linkFormLbl">Adicionar link</div>
       <div class="admin-field">
         <label>Ícone (emoji)</label>
         <input type="text" id="linkIcon" placeholder="ex: 🌐" maxlength="4" style="width:80px">
@@ -3692,9 +3703,10 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
         <input type="url" id="linkUrl" placeholder="https://...">
       </div>
       <div class="admin-btn-row">
-        <button class="admin-btn admin-btn-primary" onclick="addLink()">➕ Adicionar Link</button>
+        <button class="admin-btn admin-btn-secondary" id="linkCancelBtn" style="display:none" onclick="cancelEditLink()">Cancelar edição</button>
+        <button class="admin-btn admin-btn-primary" id="linkSaveBtn" onclick="addLink()">➕ Adicionar Link</button>
       </div>
-      <div class="admin-success" id="linkSuccess">Link adicionado com sucesso!</div>
+      <div class="admin-success" id="linkSuccess">Link salvo com sucesso!</div>
     </div>
 
     <!-- TAB: TIPOS DE EXECUÇÃO -->
@@ -3727,6 +3739,32 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
         <div class="admin-btn-row">
           <button class="admin-btn admin-btn-secondary" onclick="tipoBack()">← Voltar</button>
           <button class="admin-btn admin-btn-primary" onclick="tipoSave()">💾 Salvar tipo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: MENU SUPERIOR -->
+    <div class="admin-tab-content" id="adminTab-menu">
+      <div id="menuListView">
+        <div class="admin-section-label">Abas do menu superior</div>
+        <div class="tp-hint">Cada aba pode abrir um <strong>link direto</strong> e/ou ter um <strong>submenu</strong> (aparece com ▾). Ex.: na aba <em>Teams</em>, informe o link do canal ou do repositório de dados no Teams. Quando a aba tem link <em>e</em> subitens, o link vira a primeira opção do submenu.</div>
+        <div id="adminMenuList"></div>
+        <div class="admin-btn-row"><button class="admin-btn admin-btn-primary" onclick="menuNew()">➕ Nova aba</button></div>
+        <div class="admin-success" id="mnSuccess">Menu salvo com sucesso!</div>
+      </div>
+      <div id="menuEditView" style="display:none">
+        <div class="admin-section-label" id="mnTitleLbl">Nova aba do menu</div>
+        <div class="admin-field"><label>Nome da aba *</label><input type="text" id="mnNome" placeholder="ex: Teams"></div>
+        <div class="tp-row">
+          <div class="admin-field" style="grid-column: span 2"><label>Link direto (opcional)</label><input type="text" id="mnUrl" placeholder="https://teams.microsoft.com/l/channel/…"></div>
+          <div class="admin-field"><label>Status</label><select id="mnStatus"><option value="ativo">Ativa</option><option value="inativo">Inativa (oculta)</option></select></div>
+        </div>
+        <div class="admin-section-label">Submenu (opcional)</div>
+        <div id="mnItems"></div>
+        <div class="admin-btn-row" style="justify-content:flex-start;margin-bottom:12px"><button class="admin-btn admin-btn-secondary" onclick="mnAddItem()">➕ Adicionar subitem</button></div>
+        <div class="admin-btn-row">
+          <button class="admin-btn admin-btn-secondary" onclick="menuBack()">← Voltar</button>
+          <button class="admin-btn admin-btn-primary" onclick="menuSave()">💾 Salvar aba</button>
         </div>
       </div>
     </div>
@@ -3810,7 +3848,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
 //  de rede/extensão gera uma mensagem clara em vez de "not defined".
 // ═══════════════════════════════════════════════════════════
 (function () {
-  const APP_VERSION = 'v20.4';
+  const APP_VERSION = 'v20.5';
   const FB_BASE = 'https://www.gstatic.com/firebasejs/10.12.2/';
   const firebaseConfig = {
     apiKey:            "AIzaSyB-TABtWNh4vlmAsd5ohGpkASQqsO_nQ6E",
@@ -3831,7 +3869,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function safeUrl(u) {
-    try { const x = new URL(u); return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : ''; }
+    try { const x = new URL(u); return (x.protocol === 'http:' || x.protocol === 'https:' || x.protocol === 'msteams:') ? x.href : ''; }
     catch (e) { return ''; }
   }
   function showOk(id)  { const el = $(id); el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2500); }
@@ -3878,6 +3916,11 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
       fb.F.onSnapshot(fb.F.collection(fb.db, 'tipos'),
         snap => { tipoDocs = {}; snap.docs.forEach(d => { tipoDocs[d.id] = d.data(); }); renderAdminTipos(); applyTypes(); },
         err  => console.warn('[DIOT] Firestore tipos:', err.code));
+      try {
+        fb.F.onSnapshot(fb.F.collection(fb.db, 'menu'),
+          snap => { menuDocs = {}; snap.docs.forEach(d => { menuDocs[d.id] = d.data(); }); renderAdminMenu(); applyMenu(); },
+          err  => console.warn('[DIOT] Firestore menu:', err.code));
+      } catch (e) { console.warn('[DIOT] menu:', e); }
       console.info('[DIOT] Manual ' + APP_VERSION + ' · Firebase carregado');
       return true;
     } catch (e) {
@@ -3940,7 +3983,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     if (!currentUser) { window.openAdminLogin(); return; }
     $('adminUserBadge').textContent = currentUser.email;
     $('contaEmail').textContent     = currentUser.email;
-    renderAdminComs(); renderAdminLinks(); renderAdminTipos();
+    renderAdminComs(); renderAdminLinks(); renderAdminTipos(); renderAdminMenu();
     window.switchAdminTab('comunicados', document.querySelector('.admin-tab'));
     $('adminPanelOverlay').classList.add('open');
   }
@@ -3952,76 +3995,152 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     $('adminTab-' + name).classList.add('active');
   };
 
+  // ── helpers de lista (comunicados / links) ──
+  const isOn = o => o.active !== false;
+  function normUrl(u) {                       // aceita "teams.microsoft.com/..." sem https://
+    u = String(u || '').trim(); if (!u) return '';
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(u)) u = 'https://' + u;
+    return safeUrl(u);
+  }
+  function shortUrl(u) {                      // evita URLs enormes (ex.: Safe Links do Outlook) na lista
+    try {
+      const x = new URL(u), rest = x.pathname + x.search + x.hash;
+      return x.host ? x.host + (rest.length > 1 ? '/…' : '') : x.protocol + '…';
+    } catch (e) { return String(u).slice(0, 40) + '…'; }
+  }
+  const statusChip = on => `<span class="tp-chip tp-${on ? 'ativo' : 'oculto'}">${on ? 'Ativo' : 'Inativo'}</span>`;
+
   // ── Comunicados ──
+  let editingCom = null;
+  function resetComForm() {
+    editingCom = null;
+    $('comTitle').value = ''; $('comDate').value = ''; $('comUrl').value = '';
+    $('comFormLbl').textContent = 'Adicionar comunicado';
+    $('comSaveBtn').textContent = '➕ Adicionar Comunicado';
+    $('comCancelBtn').style.display = 'none';
+  }
   function renderAdminComs() {
     const el = $('adminComList');
     if (!cachedComs.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum comunicado cadastrado ainda.</p>'; return; }
-    el.innerHTML = cachedComs.map(c => `
-      <div class="admin-list-item">
+    el.innerHTML = cachedComs.map(c => {
+      const on = isOn(c), i = esc(c.id);
+      return `<div class="admin-list-item" style="${on ? '' : 'opacity:.6'}">
         <span style="font-size:22px">📋</span>
         <div class="admin-list-item-text">
           <span class="admin-list-item-label">${esc(c.title)}</span>
-          <span class="admin-list-item-url">${esc(c.date)}${c.url ? ' · ' + esc(c.url) : ''}</span>
+          <span class="admin-list-item-url al-trunc" title="${esc(c.url || '')}">${statusChip(on)} ${esc(c.date)}${c.url ? ' · ' + esc(shortUrl(c.url)) : ''}</span>
         </div>
-        <button class="admin-list-del" onclick="deleteCom('${esc(c.id)}')">✕</button>
-      </div>`).join('');
+        <div class="tp-actions">
+          <button class="tp-btn" onclick="toggleCom('${i}')">${on ? 'Inativar' : 'Ativar'}</button>
+          <button class="tp-btn" onclick="editCom('${i}')">Editar</button>
+          <button class="admin-list-del" onclick="deleteCom('${i}')">✕</button>
+        </div></div>`;
+    }).join('');
   }
-  window.addComunicado = async function () {
-    if (!currentUser) return window.openAdminLogin();
-    const title = $('comTitle').value.trim(), date = $('comDate').value.trim(), url = $('comUrl').value.trim();
+  window.addComunicado = async function () {          // cria ou salva a edição
+    if (!requireAdmin()) return;
+    const title = $('comTitle').value.trim(), date = $('comDate').value.trim(), raw = $('comUrl').value.trim();
     if (!title || !date) { alert('Preencha título e data.'); return; }
-    if (url && !safeUrl(url)) { alert('URL inválida. Use http:// ou https://'); return; }
+    let url = '';
+    if (raw) { url = normUrl(raw); if (!url) { alert('URL inválida. Use http://, https:// ou msteams://'); return; } }
     try {
-      await fb.F.addDoc(fb.F.collection(fb.db, 'comunicados'), { title, date, url, createdAt: Date.now() });
-      $('comTitle').value = ''; $('comDate').value = ''; $('comUrl').value = '';
-      showOk('comSuccess');
+      if (editingCom) await fb.F.setDoc(fb.F.doc(fb.db, 'comunicados', editingCom), { title, date, url, updatedAt: Date.now() }, { merge: true });
+      else await fb.F.addDoc(fb.F.collection(fb.db, 'comunicados'), { title, date, url, active: true, createdAt: Date.now() });
+      resetComForm(); showOk('comSuccess');
     } catch (e) { alert('Erro ao salvar (' + e.code + '). Verifique as regras do Firestore.'); }
   };
+  window.editCom = function (id) {
+    const c = cachedComs.find(x => x.id === id); if (!c) return;
+    editingCom = id;
+    $('comTitle').value = c.title || ''; $('comDate').value = c.date || ''; $('comUrl').value = c.url || '';
+    $('comFormLbl').textContent = 'Editar comunicado';
+    $('comSaveBtn').textContent = '💾 Salvar alterações';
+    $('comCancelBtn').style.display = '';
+    $('comTitle').scrollIntoView({ block: 'center' }); $('comTitle').focus();
+  };
+  window.cancelEditCom = resetComForm;
+  window.toggleCom = async function (id) {
+    if (!requireAdmin()) return;
+    const c = cachedComs.find(x => x.id === id); if (!c) return;
+    try { await fb.F.setDoc(fb.F.doc(fb.db, 'comunicados', id), { active: !isOn(c), updatedAt: Date.now() }, { merge: true }); }
+    catch (e) { alert('Erro ao salvar (' + e.code + ').'); }
+  };
   window.deleteCom = async function (id) {
-    if (!currentUser || !confirm('Remover este comunicado?')) return;
-    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'comunicados', id)); }
-    catch (e) { alert('Erro ao remover (' + e.code + ').'); }
+    if (!requireAdmin() || !confirm('Excluir este comunicado definitivamente?')) return;
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'comunicados', id)); if (editingCom === id) resetComForm(); }
+    catch (e) { alert('Erro ao excluir (' + e.code + ').'); }
   };
 
   // ── Links ──
+  let editingLink = null;
+  function resetLinkForm() {
+    editingLink = null;
+    $('linkIcon').value = ''; $('linkLabel').value = ''; $('linkUrl').value = '';
+    $('linkFormLbl').textContent = 'Adicionar link';
+    $('linkSaveBtn').textContent = '➕ Adicionar Link';
+    $('linkCancelBtn').style.display = 'none';
+  }
   function renderAdminLinks() {
     const el = $('adminLinkList');
     if (!cachedLinks.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum link cadastrado ainda.</p>'; return; }
-    el.innerHTML = cachedLinks.map(l => `
-      <div class="admin-list-item">
+    el.innerHTML = cachedLinks.map(l => {
+      const on = isOn(l), i = esc(l.id);
+      return `<div class="admin-list-item" style="${on ? '' : 'opacity:.6'}">
         <span style="font-size:22px">${esc(l.icon || '🌐')}</span>
         <div class="admin-list-item-text">
           <span class="admin-list-item-label">${esc(l.label)}</span>
-          <span class="admin-list-item-url">${esc(l.url)}</span>
+          <span class="admin-list-item-url al-trunc" title="${esc(l.url || '')}">${statusChip(on)} ${esc(shortUrl(l.url))}</span>
         </div>
-        <button class="admin-list-del" onclick="deleteLink('${esc(l.id)}')">✕</button>
-      </div>`).join('');
+        <div class="tp-actions">
+          <button class="tp-btn" onclick="toggleLink('${i}')">${on ? 'Inativar' : 'Ativar'}</button>
+          <button class="tp-btn" onclick="editLink('${i}')">Editar</button>
+          <button class="admin-list-del" onclick="deleteLink('${i}')">✕</button>
+        </div></div>`;
+    }).join('');
   }
   window.addLink = async function () {
-    if (!currentUser) return window.openAdminLogin();
-    const icon = $('linkIcon').value.trim() || '🌐', label = $('linkLabel').value.trim(), url = $('linkUrl').value.trim();
-    if (!label || !url) { alert('Preencha nome e URL.'); return; }
-    if (!safeUrl(url))  { alert('URL inválida. Use http:// ou https://'); return; }
+    if (!requireAdmin()) return;
+    const icon = $('linkIcon').value.trim() || '🌐', label = $('linkLabel').value.trim(), raw = $('linkUrl').value.trim();
+    if (!label || !raw) { alert('Preencha nome e URL.'); return; }
+    const url = normUrl(raw);
+    if (!url) { alert('URL inválida. Use http://, https:// ou msteams://'); return; }
     try {
-      await fb.F.addDoc(fb.F.collection(fb.db, 'links'), { icon, label, url, createdAt: Date.now() });
-      $('linkIcon').value = ''; $('linkLabel').value = ''; $('linkUrl').value = '';
-      showOk('linkSuccess');
+      if (editingLink) await fb.F.setDoc(fb.F.doc(fb.db, 'links', editingLink), { icon, label, url, updatedAt: Date.now() }, { merge: true });
+      else await fb.F.addDoc(fb.F.collection(fb.db, 'links'), { icon, label, url, active: true, createdAt: Date.now() });
+      resetLinkForm(); showOk('linkSuccess');
     } catch (e) { alert('Erro ao salvar (' + e.code + '). Verifique as regras do Firestore.'); }
   };
+  window.editLink = function (id) {
+    const l = cachedLinks.find(x => x.id === id); if (!l) return;
+    editingLink = id;
+    $('linkIcon').value = l.icon || ''; $('linkLabel').value = l.label || ''; $('linkUrl').value = l.url || '';
+    $('linkFormLbl').textContent = 'Editar link';
+    $('linkSaveBtn').textContent = '💾 Salvar alterações';
+    $('linkCancelBtn').style.display = '';
+    $('linkLabel').scrollIntoView({ block: 'center' }); $('linkLabel').focus();
+  };
+  window.cancelEditLink = resetLinkForm;
+  window.toggleLink = async function (id) {
+    if (!requireAdmin()) return;
+    const l = cachedLinks.find(x => x.id === id); if (!l) return;
+    try { await fb.F.setDoc(fb.F.doc(fb.db, 'links', id), { active: !isOn(l), updatedAt: Date.now() }, { merge: true }); }
+    catch (e) { alert('Erro ao salvar (' + e.code + ').'); }
+  };
   window.deleteLink = async function (id) {
-    if (!currentUser || !confirm('Remover este link?')) return;
-    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'links', id)); }
-    catch (e) { alert('Erro ao remover (' + e.code + ').'); }
+    if (!requireAdmin() || !confirm('Excluir este link definitivamente?')) return;
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'links', id)); if (editingLink === id) resetLinkForm(); }
+    catch (e) { alert('Erro ao excluir (' + e.code + ').'); }
   };
 
-  // ── Dashboard público (aparece só se houver conteúdo) ──
+  // ── Dashboard público (só itens ATIVOS; aparece se houver conteúdo) ──
   function renderDashboard() {
-    const has = cachedComs.length > 0 || cachedLinks.length > 0;
+    const coms = cachedComs.filter(isOn), links = cachedLinks.filter(isOn);
+    const has = coms.length > 0 || links.length > 0;
     $('spHero').style.display      = has ? '' : 'none';
     $('spDashboard').style.display = has ? '' : 'none';
     const comList = document.querySelector('.sp-comunicados-list');
     if (comList) {
-      comList.innerHTML = cachedComs.length ? cachedComs.map(c => {
+      comList.innerHTML = coms.length ? coms.map(c => {
         const u = safeUrl(c.url);
         return `<a class="sp-com-item" ${u ? `href="${esc(u)}" target="_blank" rel="noopener"` : 'style="cursor:default"'}>
           <div class="sp-com-thumb">📋</div>
@@ -4031,7 +4150,7 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     }
     const linksList = document.querySelector('.sp-links-list');
     if (linksList) {
-      linksList.innerHTML = cachedLinks.length ? cachedLinks.map(l =>
+      linksList.innerHTML = links.length ? links.map(l =>
         `<a class="sp-link-btn" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" style="text-decoration:none">
            <span class="sp-link-icon">${esc(l.icon || '🌐')}</span> ${esc(l.label)}
          </a>`).join('')
@@ -4662,6 +4781,142 @@ Protocolo/porta: TCP / Range: 60500 - 60600</span>
     if (!it) return;
     e.preventDefault(); addImageToRow(targetRow(), it.getAsFile());
   });
+
+  // ═══════════════════════════════════════════════════════════
+  //  MENU SUPERIOR (abas) — Firestore: coleção "menu"
+  //  cada aba: nome · link direto (opcional) · submenu (opcional) · ativa/inativa
+  // ═══════════════════════════════════════════════════════════
+  const slugify = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const navDefaults = {};
+  let menuDocs = {}, lastMenuSig = null, editingNav = null;
+
+  function scanNav() {
+    document.querySelectorAll('.sp-nav-links > a.sp-nav-link').forEach(a => {
+      const label = (a.firstChild ? a.firstChild.textContent : a.textContent).trim();
+      const id = 'nav-' + slugify(label);
+      navDefaults[id] = { id, label };
+    });
+  }
+  scanNav();
+
+  function navEff(id) {
+    const d = navDefaults[id], o = menuDocs[id] || {};
+    return { id, builtin: !!d, label: o.label || (d && d.label) || id, url: o.url || '', active: o.active !== false, items: o.items || [], override: !!menuDocs[id] };
+  }
+  function navIds() {
+    return Object.keys(navDefaults).concat(Object.keys(menuDocs).filter(id => !navDefaults[id])
+      .sort((a, b) => (menuDocs[a].createdAt || 0) - (menuDocs[b].createdAt || 0)));
+  }
+  function navItemHtml(e) {
+    const ext = u => { const s = safeUrl(u); return s ? ` href="${esc(s)}" target="_blank" rel="noopener"` : ''; };
+    const home = e.id === 'nav-pagina-inicial' ? ' active' : '';
+    if (e.items.length) {
+      const entries = (e.url ? [{ label: 'Abrir ' + e.label, url: e.url }] : []).concat(e.items);
+      return `<div class="sp-nav-dd"><button type="button" class="sp-nav-link${home}" aria-haspopup="true">${esc(e.label)} <span class="sp-arrow">▾</span></button>` +
+             `<div class="sp-nav-menu">${entries.map(i => `<a${ext(i.url)} title="${esc(i.label)}">${esc(i.label)}</a>`).join('')}</div></div>`;
+    }
+    return `<a class="sp-nav-link${home}"${e.url ? ext(e.url) : ''}>${esc(e.label)}</a>`;
+  }
+  function applyMenu() {
+    const sig = JSON.stringify(menuDocs);
+    if (sig === lastMenuSig) return; lastMenuSig = sig;
+    const nav = document.querySelector('.sp-nav-links'); if (!nav) return;
+    nav.innerHTML = navIds().map(id => navEff(id)).filter(e => e.active).map(navItemHtml).join('');
+  }
+  document.addEventListener('click', e => {      // abre/fecha submenus (toque e clique)
+    const btn = e.target.closest('.sp-nav-dd > .sp-nav-link');
+    document.querySelectorAll('.sp-nav-dd.open').forEach(d => { if (!btn || d !== btn.parentElement) d.classList.remove('open'); });
+    if (btn) btn.parentElement.classList.toggle('open');
+  });
+
+  // ── painel admin: lista ──
+  function renderAdminMenu() {
+    const el = $('adminMenuList'); if (!el) return;
+    el.innerHTML = navIds().map(id => {
+      const e = navEff(id), i = esc(id);
+      const info = (e.url ? esc(shortUrl(e.url)) : 'sem link') + (e.items.length ? ' · ' + e.items.length + ' subitem(ns)' : '') + (e.builtin ? '' : ' · personalizada');
+      return `<div class="admin-list-item" style="${e.active ? '' : 'opacity:.6'}">
+        <span style="font-size:22px">🧭</span>
+        <div class="admin-list-item-text">
+          <span class="admin-list-item-label">${esc(e.label)}</span>
+          <span class="admin-list-item-url al-trunc" title="${esc(e.url)}"><span class="tp-chip tp-${e.active ? 'ativo' : 'oculto'}">${e.active ? 'Ativa' : 'Inativa'}</span> ${info}</span>
+        </div>
+        <div class="tp-actions">
+          <button class="tp-btn" onclick="menuToggle('${i}')">${e.active ? 'Inativar' : 'Ativar'}</button>
+          <button class="tp-btn" onclick="menuEdit('${i}')">Editar</button>
+          ${e.builtin ? (e.override ? `<button class="tp-btn" onclick="menuRestore('${i}')">Restaurar</button>` : '')
+                      : `<button class="admin-list-del" onclick="menuDelete('${i}')">✕</button>`}
+        </div></div>`;
+    }).join('');
+  }
+  const menuErr = e => alert('Erro ao salvar (' + (e.code || e.message) + '). Confira se as regras do Firestore liberam a coleção "menu".');
+
+  window.menuToggle = async function (id) {
+    if (!requireAdmin()) return;
+    try { await fb.F.setDoc(fb.F.doc(fb.db, 'menu', id), { active: !navEff(id).active, updatedAt: Date.now() }, { merge: true }); }
+    catch (e) { menuErr(e); }
+  };
+  window.menuDelete = async function (id) {
+    if (!requireAdmin() || !confirm('Excluir esta aba do menu?')) return;
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'menu', id)); } catch (e) { menuErr(e); }
+  };
+  window.menuRestore = async function (id) {
+    if (!requireAdmin() || !confirm('Restaurar esta aba ao original (sem link e sem submenu)?')) return;
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, 'menu', id)); } catch (e) { menuErr(e); }
+  };
+
+  // ── painel admin: formulário ──
+  function renumberNavItems() {
+    document.querySelectorAll('#mnItems .mn-n').forEach((el, i) => { el.textContent = 'Subitem ' + (i + 1); });
+  }
+  function addNavItemRow(it) {
+    const row = document.createElement('div');
+    row.className = 'tp-phase mn-item';
+    row.innerHTML = '<div class="tp-phase-hdr"><strong class="mn-n"></strong><button class="admin-list-del" type="button" onclick="mnRemoveItem(this)">✕ Remover</button></div>' +
+      '<input class="mn-it-label" type="text" placeholder="Título do subitem (ex: Repositório de dados)">' +
+      '<input class="mn-it-url" type="text" placeholder="Link (https://…)">';
+    row.querySelector('.mn-it-label').value = (it && it.label) || '';
+    row.querySelector('.mn-it-url').value   = (it && it.url) || '';
+    $('mnItems').appendChild(row); renumberNavItems();
+  }
+  window.mnAddItem = () => addNavItemRow(null);
+  window.mnRemoveItem = btn => { btn.closest('.mn-item').remove(); renumberNavItems(); };
+  function openNavForm(id) {
+    editingNav = id;
+    const e = id ? navEff(id) : { label: '', url: '', active: true, items: [], builtin: false };
+    $('mnTitleLbl').textContent = id ? 'Editar aba do menu' : 'Nova aba do menu';
+    $('mnNome').value = e.label; $('mnUrl').value = e.url; $('mnStatus').value = e.active ? 'ativo' : 'inativo';
+    $('mnItems').innerHTML = ''; e.items.forEach(addNavItemRow);
+    $('menuListView').style.display = 'none'; $('menuEditView').style.display = '';
+  }
+  window.menuNew  = () => openNavForm(null);
+  window.menuEdit = id => openNavForm(id);
+  window.menuBack = () => { $('menuEditView').style.display = 'none'; $('menuListView').style.display = ''; };
+  window.menuSave = async function () {
+    if (!requireAdmin()) return;
+    const label = $('mnNome').value.trim();
+    if (!label) { alert('Informe o nome da aba.'); return; }
+    let url = '';
+    if ($('mnUrl').value.trim()) { url = normUrl($('mnUrl').value); if (!url) { alert('Link da aba inválido. Use http://, https:// ou msteams://'); return; } }
+    const items = [];
+    const rows = [...document.querySelectorAll('#mnItems .mn-item')];
+    for (let i = 0; i < rows.length; i++) {
+      const l = rows[i].querySelector('.mn-it-label').value.trim(), u = rows[i].querySelector('.mn-it-url').value.trim();
+      if (!l && !u) continue;
+      const nu = normUrl(u);
+      if (!l || !nu) { alert('Subitem ' + (i + 1) + ': informe título e um link válido.'); return; }
+      items.push({ label: l, url: nu });
+    }
+    const data = { label, url, active: $('mnStatus').value === 'ativo', items, updatedAt: Date.now() };
+    let id = editingNav;
+    if (!id) {
+      let slug = 'x-' + (slugify(label).slice(0, 40) || 'aba'), n = 2; id = slug;
+      while (navDefaults[id] || menuDocs[id]) id = slug + '-' + (n++);
+      data.custom = true; data.createdAt = Date.now();
+    }
+    try { await fb.F.setDoc(fb.F.doc(fb.db, 'menu', id), data, { merge: true }); window.menuBack(); showOk('mnSuccess'); }
+    catch (e) { menuErr(e); }
+  };
 
   // ── Fechar overlays ao clicar fora ──
   $('adminLoginOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) window.closeAdminLogin(); });
